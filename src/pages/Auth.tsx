@@ -14,7 +14,7 @@ import { Search } from "lucide-react";
 const signInSchema = z.object({
   email: z.string().trim().email("Invalid email").max(255),
   password: z.string().min(6, "At least 6 characters").max(100),
-});
+}).required();
 const signUpSchema = signInSchema.extend({
   displayName: z.string().trim().min(2, "Min 2 characters").max(60),
 });

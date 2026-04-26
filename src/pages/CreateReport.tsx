@@ -113,13 +113,16 @@ export default function CreateReport() {
       }
 
       if (editing) {
-        const { error } = await supabase.from("reports").update({ ...parsed.data, image_url }).eq("id", id!);
+        const { error } = await supabase
+          .from("reports")
+          .update({ ...parsed.data, image_url: image_url ?? undefined })
+          .eq("id", id!);
         if (error) throw error;
         toast.success("Report updated");
       } else {
         const { data, error } = await supabase
           .from("reports")
-          .insert({ ...parsed.data, image_url, user_id: user.id })
+          .insert({ ...parsed.data, image_url: image_url ?? undefined, user_id: user.id })
           .select("id")
           .single();
         if (error) throw error;
