@@ -13,6 +13,7 @@ import {
   Search,
 } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
+import foundItLogo from "@/assets/foundit-logo.png";
 
 const navItems = [
   { to: "/", label: "Home", icon: Home, end: true },
@@ -36,10 +37,8 @@ export const AppLayout = () => {
       <header className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur-md">
         <div className="container flex h-16 items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-lg bg-gradient-hero flex items-center justify-center shadow-elevated">
-              <Search className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <div className="font-bold text-lg tracking-tight">FoundIt</div>
+            <img src={foundItLogo} alt="FoundIt logo" className="h-9 w-auto rounded-md" />
+            <span className="sr-only">FoundIt</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
