@@ -112,17 +112,26 @@ export default function CreateReport() {
         image_url = data.publicUrl;
       }
 
+      const dbRow = {
+        type: parsed.data.type,
+        title: parsed.data.title,
+        description: parsed.data.description,
+        category: parsed.data.category,
+        location_text: parsed.data.location_text,
+        event_date: parsed.data.event_date,
+        latitude: parsed.data.latitude ?? undefined,
+        longitude: parsed.data.longitude ?? undefined,
+        image_url: image_url ?? undefined,
+      };
+
       if (editing) {
-        const { error } = await supabase
-          .from("reports")
-          .update({ ...parsed.data, image_url: image_url ?? undefined })
-          .eq("id", id!);
+        const { error } = await supabase.from("reports").update(dbRow).eq("id", id!);
         if (error) throw error;
         toast.success("Report updated");
       } else {
         const { data, error } = await supabase
           .from("reports")
-          .insert({ ...parsed.data, image_url: image_url ?? undefined, user_id: user.id })
+          .insert({ ...dbRow, user_id: user.id })
           .select("id")
           .single();
         if (error) throw error;
