@@ -1,0 +1,70 @@
+import { Link } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { MapPin, Calendar } from "lucide-react";
+import { format } from "date-fns";
+
+export interface ReportCardData {
+  id: string;
+  type: "lost" | "found";
+  title: string;
+  description: string;
+  category: string;
+  location_text: string;
+  event_date: string;
+  image_url: string | null;
+  status: string;
+}
+
+export const ReportCard = ({ r }: { r: ReportCardData }) => {
+  const isLost = r.type === "lost";
+  return (
+    <Link to={`/reports/${r.id}`}>
+      <Card className="overflow-hidden h-full shadow-card hover:shadow-elevated transition-smooth hover:-translate-y-0.5 group">
+        <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+          {r.image_url ? (
+            <img
+              src={r.image_url}
+              alt={r.title}
+              loading="lazy"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-soft flex items-center justify-center text-muted-foreground text-sm">
+              No image
+            </div>
+          )}
+          <Badge
+            className={`absolute top-3 left-3 border-0 ${
+              isLost ? "bg-[hsl(var(--lost))] text-white" : "bg-[hsl(var(--found))] text-white"
+            }`}
+          >
+            {isLost ? "LOST" : "FOUND"}
+          </Badge>
+          {r.status !== "active" && (
+            <Badge variant="secondary" className="absolute top-3 right-3 capitalize">
+              {r.status}
+            </Badge>
+          )}
+        </div>
+        <div className="p-4 space-y-2">
+          <div className="flex items-start justify-between gap-2">
+            <h3 className="font-semibold leading-tight line-clamp-1">{r.title}</h3>
+          </div>
+          <p className="text-sm text-muted-foreground line-clamp-2">{r.description}</p>
+          <div className="flex items-center gap-3 text-xs text-muted-foreground pt-1">
+            <span className="flex items-center gap-1">
+              <MapPin className="h-3 w-3" />
+              <span className="truncate max-w-[120px]">{r.location_text}</span>
+            </span>
+            <span className="flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              {format(new Date(r.event_date), "MMM d")}
+            </span>
+          </div>
+          <Badge variant="outline" className="text-xs">{r.category}</Badge>
+        </div>
+      </Card>
+    </Link>
+  );
+};
