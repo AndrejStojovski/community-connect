@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar } from "lucide-react";
+import { MapPin, Calendar, Star, ShieldCheck } from "lucide-react";
 import { format } from "date-fns";
 
 export interface ReportCardData {
@@ -14,6 +14,7 @@ export interface ReportCardData {
   event_date: string;
   image_url: string | null;
   status: string;
+  poster?: { display_name: string; reputation_score: number; verified_claims: number } | null;
 }
 
 export const ReportCard = ({ r }: { r: ReportCardData }) => {
@@ -63,6 +64,24 @@ export const ReportCard = ({ r }: { r: ReportCardData }) => {
             </span>
           </div>
           <Badge variant="outline" className="text-xs">{r.category}</Badge>
+          {r.poster && (
+            <div className="flex items-center justify-between text-xs text-muted-foreground pt-1 border-t border-border/40 mt-2">
+              <Link
+                to={`/profile/${encodeURIComponent(r.poster.display_name)}`}
+                onClick={(e) => e.stopPropagation()}
+                className="truncate hover:text-foreground transition-colors"
+              >
+                {r.poster.display_name}
+              </Link>
+              <span className="flex items-center gap-1.5 shrink-0">
+                {r.poster.verified_claims > 0 && <ShieldCheck className="h-3 w-3 text-emerald-400" />}
+                <span className="flex items-center gap-0.5">
+                  <Star className="h-3 w-3" />
+                  {r.poster.reputation_score}
+                </span>
+              </span>
+            </div>
+          )}
         </div>
       </Card>
     </Link>
