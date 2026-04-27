@@ -19,9 +19,9 @@ export interface ReportCardData {
 export const ReportCard = ({ r }: { r: ReportCardData }) => {
   const isLost = r.type === "lost";
   return (
-    <Link to={`/reports/${r.id}`}>
-      <Card className="overflow-hidden h-full shadow-card hover:shadow-elevated transition-smooth hover:-translate-y-0.5 group">
-        <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+    <Link to={`/reports/${r.id}`} className="block h-full">
+      <Card className="overflow-hidden h-full bg-gradient-card border-white/5 shadow-card hover:shadow-elevated hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 group">
+        <div className="aspect-[4/3] bg-muted/40 relative overflow-hidden">
           {r.image_url ? (
             <img
               src={r.image_url}
@@ -30,19 +30,19 @@ export const ReportCard = ({ r }: { r: ReportCardData }) => {
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-soft flex items-center justify-center text-muted-foreground text-sm">
+            <div className="w-full h-full bg-gradient-card flex items-center justify-center text-muted-foreground text-sm">
               No image
             </div>
           )}
           <Badge
-            className={`absolute top-3 left-3 border-0 ${
-              isLost ? "bg-[hsl(var(--lost))] text-white" : "bg-[hsl(var(--found))] text-white"
+            className={`absolute top-3 left-3 border-0 backdrop-blur-md font-semibold tracking-wide ${
+              isLost ? "bg-[hsl(var(--lost))]/90 text-white" : "bg-[hsl(var(--found))]/90 text-white"
             }`}
           >
             {isLost ? "LOST" : "FOUND"}
           </Badge>
           {r.status !== "active" && (
-            <Badge variant="secondary" className="absolute top-3 right-3 capitalize">
+            <Badge variant="secondary" className="absolute top-3 right-3 capitalize backdrop-blur-md bg-card/70">
               {r.status}
             </Badge>
           )}
