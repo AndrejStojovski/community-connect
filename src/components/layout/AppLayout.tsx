@@ -37,7 +37,7 @@ export const AppLayout = () => {
       <header className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur-md">
         <div className="container flex h-16 items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2">
-            <img src={foundItLogo} alt="FoundIt logo" className="h-9 w-auto rounded-md" />
+            <img src={foundItLogo} alt="FoundIt logo" className="h-12 md:h-14 w-auto" />
             <span className="sr-only">FoundIt</span>
           </Link>
 
