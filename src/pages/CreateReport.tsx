@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { CATEGORIES } from "@/lib/categories";
 import { toast } from "sonner";
-import { Upload, Loader2 } from "lucide-react";
+import { Upload, Loader2, Plus, X } from "lucide-react";
 
 const schema = z.object({
   type: z.enum(["lost", "found"]),
@@ -44,6 +44,7 @@ export default function CreateReport() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [proofQuestions, setProofQuestions] = useState<string[]>([]);
 
   useEffect(() => {
     if (!editing) return;
@@ -59,6 +60,7 @@ export default function CreateReport() {
         setLongitude(data.longitude?.toString() ?? "");
         setEventDate(data.event_date);
         setImagePreview(data.image_url);
+        setProofQuestions(((data as { proof_questions?: string[] }).proof_questions) ?? []);
       }
     })();
   }, [editing, id]);
@@ -122,6 +124,7 @@ export default function CreateReport() {
         latitude: parsed.data.latitude ?? undefined,
         longitude: parsed.data.longitude ?? undefined,
         image_url: image_url ?? undefined,
+        proof_questions: proofQuestions.map((q) => q.trim()).filter(Boolean).slice(0, 3),
       };
 
       if (editing) {
@@ -234,6 +237,51 @@ export default function CreateReport() {
               />
             </label>
           </div>
+
+          {type === "found" && (
+            <div className="space-y-2 rounded-lg border border-border/60 bg-card/40 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-base">Proof questions (optional)</Label>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Ask up to 3 verification questions only the real owner would know.
+                  </p>
+                </div>
+                {proofQuestions.length < 3 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setProofQuestions([...proofQuestions, ""])}
+                  >
+                    <Plus className="h-4 w-4 mr-1" /> Add
+                  </Button>
+                )}
+              </div>
+              {proofQuestions.map((q, i) => (
+                <div key={i} className="flex gap-2">
+                  <Input
+                    value={q}
+                    maxLength={200}
+                    placeholder={`Question ${i + 1} (e.g. "What's engraved inside?")`}
+                    onChange={(e) => {
+                      const next = [...proofQuestions];
+                      next[i] = e.target.value;
+                      setProofQuestions(next);
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setProofQuestions(proofQuestions.filter((_, j) => j !== i))}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
 
           <Button type="submit" className="w-full" size="lg" disabled={submitting}>
             {submitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
