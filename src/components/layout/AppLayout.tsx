@@ -33,9 +33,9 @@ export const AppLayout = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <header className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur-md">
-        <div className="container flex h-16 items-center justify-between gap-4">
+    <div className="min-h-screen flex flex-col">
+      <header className="sticky top-0 z-40 border-b border-white/5 bg-background/60 backdrop-blur-xl">
+        <div className="container flex h-18 py-2 items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2">
             <img src={foundItLogo} alt="FoundIt logo" className="h-12 md:h-14 w-auto" />
             <span className="sr-only">FoundIt</span>
@@ -48,10 +48,10 @@ export const AppLayout = () => {
                 to={to}
                 end={end}
                 className={({ isActive }) =>
-                  `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-smooth ${
+                  `flex items-center gap-2 px-3.5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "bg-primary/15 text-foreground shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.3)]"
+                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
                   }`
                 }
               >
@@ -63,10 +63,10 @@ export const AppLayout = () => {
               <NavLink
                 to="/admin"
                 className={({ isActive }) =>
-                  `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-smooth ${
+                  `flex items-center gap-2 px-3.5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      ? "bg-primary/15 text-foreground shadow-[inset_0_0_0_1px_hsl(var(--primary)/0.3)]"
+                      : "text-muted-foreground hover:text-foreground hover:bg-white/5"
                   }`
                 }
               >
@@ -86,7 +86,7 @@ export const AppLayout = () => {
                 </Button>
               </>
             ) : (
-              <Button size="sm" onClick={() => navigate("/auth")}>
+              <Button size="sm" onClick={() => navigate("/auth")} className="bg-gradient-hero text-primary-foreground hover:opacity-90 shadow-glow">
                 Sign in
               </Button>
             )}
@@ -94,7 +94,7 @@ export const AppLayout = () => {
         </div>
 
         {/* Mobile bottom nav */}
-        <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border bg-card/95 backdrop-blur-md">
+        <nav className="md:hidden fixed bottom-3 inset-x-3 z-40 rounded-2xl border border-white/10 bg-card/80 backdrop-blur-2xl shadow-elevated">
           <div className="grid grid-cols-5">
             {navItems.map(({ to, label, icon: Icon, end }) => (
               <NavLink
@@ -102,7 +102,7 @@ export const AppLayout = () => {
                 to={to}
                 end={end}
                 className={({ isActive }) =>
-                  `flex flex-col items-center justify-center gap-1 py-2 text-[10px] font-medium ${
+                  `flex flex-col items-center justify-center gap-1 py-2.5 text-[10px] font-medium transition-colors ${
                     isActive ? "text-primary" : "text-muted-foreground"
                   }`
                 }
@@ -115,7 +115,7 @@ export const AppLayout = () => {
         </nav>
       </header>
 
-      <main className="flex-1 pb-20 md:pb-8">
+      <main className="flex-1 pb-24 md:pb-8 animate-fade-in">
         <Outlet />
       </main>
     </div>
