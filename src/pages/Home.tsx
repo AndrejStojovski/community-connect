@@ -56,25 +56,27 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="bg-gradient-hero text-primary-foreground">
-        <div className="container py-12 md:py-16">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-xs font-medium mb-4">
-              <Sparkles className="h-3.5 w-3.5" /> Community-powered recovery
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-hero opacity-20 blur-3xl" aria-hidden />
+        <div className="container py-16 md:py-24 relative">
+          <div className="max-w-2xl animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-xs font-medium mb-5 text-foreground/80">
+              <Sparkles className="h-3.5 w-3.5 text-primary" /> Community-powered recovery
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">
-              Lost something? Found something?
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">
+              Lost something?{" "}
+              <span className="text-gradient">Found something?</span>
             </h1>
-            <p className="text-primary-foreground/85 mt-3 text-lg">
-              Post a report, browse the community feed, and let our matching engine connect lost items with their owners.
+            <p className="text-muted-foreground mt-5 text-lg leading-relaxed">
+              Post a report, browse the community feed, and let our matching engine reconnect lost items with their owners.
             </p>
-            <div className="flex gap-3 mt-6">
-              <Button asChild size="lg" variant="secondary">
+            <div className="flex flex-wrap gap-3 mt-7">
+              <Button asChild size="lg" className="bg-gradient-hero text-primary-foreground hover:opacity-90 shadow-glow">
                 <Link to="/create">
                   <PlusCircle className="h-5 w-5 mr-2" /> Create report
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="bg-transparent border-white/40 text-white hover:bg-white/10 hover:text-white">
+              <Button asChild size="lg" variant="outline" className="border-white/15 bg-white/5 hover:bg-white/10">
                 <Link to="/map">View map</Link>
               </Button>
             </div>
@@ -82,9 +84,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="container py-8">
+      <section className="container pb-10">
         {/* Filters */}
-        <div className="bg-card rounded-xl shadow-card p-4 md:p-5 -mt-12 relative z-10 mb-8 border">
+        <div className="glass-strong rounded-2xl shadow-card p-4 md:p-5 relative z-10 mb-8 animate-scale-in">
           <div className="grid gap-3 md:grid-cols-12">
             <div className="md:col-span-4 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -138,15 +140,15 @@ export default function Home() {
         {loading ? (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="aspect-[4/3] rounded-xl bg-muted animate-pulse" />
+              <div key={i} className="aspect-[4/3] rounded-2xl bg-card/40 border border-white/5 animate-pulse" />
             ))}
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-20 text-muted-foreground">
+          <div className="text-center py-20 text-muted-foreground glass rounded-2xl">
             No reports match your filters.
           </div>
         ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 animate-fade-in">
             {filtered.map((r) => <ReportCard key={r.id} r={r} />)}
           </div>
         )}
