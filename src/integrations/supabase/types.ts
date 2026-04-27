@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      claims: {
+        Row: {
+          answers: Json
+          claimant_id: string
+          created_at: string
+          id: string
+          owner_id: string
+          owner_notes: string | null
+          proof_image_url: string | null
+          report_id: string
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["claim_status"]
+          updated_at: string
+        }
+        Insert: {
+          answers?: Json
+          claimant_id: string
+          created_at?: string
+          id?: string
+          owner_id: string
+          owner_notes?: string | null
+          proof_image_url?: string | null
+          report_id: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["claim_status"]
+          updated_at?: string
+        }
+        Update: {
+          answers?: Json
+          claimant_id?: string
+          created_at?: string
+          id?: string
+          owner_id?: string
+          owner_notes?: string | null
+          proof_image_url?: string | null
+          report_id?: string
+          resolved_at?: string | null
+          status?: Database["public"]["Enums"]["claim_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
@@ -88,24 +130,39 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
           created_at: string
           display_name: string
           id: string
+          rejected_claims: number
+          reputation_score: number
+          successful_returns: number
           updated_at: string
+          verified_claims: number
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
           display_name: string
           id: string
+          rejected_claims?: number
+          reputation_score?: number
+          successful_returns?: number
           updated_at?: string
+          verified_claims?: number
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
           display_name?: string
           id?: string
+          rejected_claims?: number
+          reputation_score?: number
+          successful_returns?: number
           updated_at?: string
+          verified_claims?: number
         }
         Relationships: []
       }
@@ -120,6 +177,7 @@ export type Database = {
           latitude: number | null
           location_text: string
           longitude: number | null
+          proof_questions: string[]
           status: Database["public"]["Enums"]["report_status"]
           title: string
           type: Database["public"]["Enums"]["report_type"]
@@ -136,6 +194,7 @@ export type Database = {
           latitude?: number | null
           location_text: string
           longitude?: number | null
+          proof_questions?: string[]
           status?: Database["public"]["Enums"]["report_status"]
           title: string
           type: Database["public"]["Enums"]["report_type"]
@@ -152,10 +211,38 @@ export type Database = {
           latitude?: number | null
           location_text?: string
           longitude?: number | null
+          proof_questions?: string[]
           status?: Database["public"]["Enums"]["report_status"]
           title?: string
           type?: Database["public"]["Enums"]["report_type"]
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reputation_events: {
+        Row: {
+          claim_id: string | null
+          created_at: string
+          delta: number
+          id: string
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          claim_id?: string | null
+          created_at?: string
+          delta: number
+          id?: string
+          reason: string
+          user_id: string
+        }
+        Update: {
+          claim_id?: string | null
+          created_at?: string
+          delta?: number
+          id?: string
+          reason?: string
           user_id?: string
         }
         Relationships: []
@@ -196,6 +283,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      claim_status: "pending" | "approved" | "rejected" | "disputed"
       report_status: "active" | "matched" | "resolved" | "archived"
       report_type: "lost" | "found"
     }
@@ -326,6 +414,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      claim_status: ["pending", "approved", "rejected", "disputed"],
       report_status: ["active", "matched", "resolved", "archived"],
       report_type: ["lost", "found"],
     },
