@@ -15,6 +15,7 @@ import ReportDetail from "./pages/ReportDetail";
 import MapView from "./pages/MapView";
 import MessagesPage from "./pages/Messages";
 import Admin from "./pages/Admin";
+import ProfilePage from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,8 @@ const App = () => (
               <Route path="/my-reports" element={<ProtectedRoute><MyReports /></ProtectedRoute>} />
               <Route path="/messages" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
               <Route path="/admin" element={<ProtectedRoute adminOnly><Admin /></ProtectedRoute>} />
+              <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+              <Route path="/profile/:name" element={<ProfilePage />} />
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

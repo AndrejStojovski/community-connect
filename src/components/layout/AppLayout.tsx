@@ -11,6 +11,7 @@ import {
   LogOut,
   Bell,
   Search,
+  User as UserIcon,
 } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
 import foundItLogo from "@/assets/foundit-logo.png";
@@ -80,6 +81,10 @@ export const AppLayout = () => {
             {user ? (
               <>
                 <NotificationBell />
+                <Button variant="ghost" size="sm" onClick={() => navigate("/profile")}>
+                  <UserIcon className="h-4 w-4 md:mr-2" />
+                  <span className="hidden md:inline">Profile</span>
+                </Button>
                 <Button variant="ghost" size="sm" onClick={handleSignOut}>
                   <LogOut className="h-4 w-4 md:mr-2" />
                   <span className="hidden md:inline">Sign out</span>

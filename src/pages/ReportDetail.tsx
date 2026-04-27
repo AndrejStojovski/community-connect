@@ -9,7 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { ReportCard, ReportCardData } from "@/components/reports/ReportCard";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { MapPin, Calendar, ArrowLeft, Send, MessageSquare } from "lucide-react";
+import { MapPin, Calendar, ArrowLeft, Send, MessageSquare, ShieldCheck } from "lucide-react";
+import { ClaimDialog } from "@/components/claims/ClaimDialog";
+import { ClaimsPanel } from "@/components/claims/ClaimsPanel";
+import { ReputationBadge } from "@/components/profile/ReputationBadge";
 
 interface Report extends ReportCardData {
   user_id: string;
@@ -17,6 +20,7 @@ interface Report extends ReportCardData {
   latitude: number | null;
   longitude: number | null;
   created_at: string;
+  proof_questions: string[];
 }
 
 function tokenize(s: string) {
@@ -36,7 +40,7 @@ export default function ReportDetail() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [report, setReport] = useState<Report | null>(null);
-  const [author, setAuthor] = useState<{ display_name: string } | null>(null);
+  const [author, setAuthor] = useState<{ display_name: string; reputation_score: number; successful_returns: number; verified_claims: number; rejected_claims: number } | null>(null);
   const [matches, setMatches] = useState<Array<ReportCardData & { score: number }>>([]);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -47,7 +51,11 @@ export default function ReportDetail() {
       const { data } = await supabase.from("reports").select("*").eq("id", id).maybeSingle();
       if (!data) return;
       setReport(data as Report);
-      const { data: prof } = await supabase.from("profiles").select("display_name").eq("id", data.user_id).maybeSingle();
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("display_name,reputation_score,successful_returns,verified_claims,rejected_claims")
+        .eq("id", data.user_id)
+        .maybeSingle();
       setAuthor(prof);
       // Find potential matches: opposite type, same category, recent
       const oppositeType = data.type === "lost" ? "found" : "lost";
@@ -114,6 +122,7 @@ export default function ReportDetail() {
 
   const isOwner = user?.id === report.user_id;
   const isLost = report.type === "lost";
+  const canClaim = !isOwner && user && report.type === "found" && report.status === "active";
 
   return (
     <div className="container max-w-4xl py-8">
@@ -139,9 +148,30 @@ export default function ReportDetail() {
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1"><MapPin className="h-4 w-4" /> {report.location_text}</span>
             <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> {format(new Date(report.event_date), "MMMM d, yyyy")}</span>
-            {author && <span>Posted by <span className="font-medium text-foreground">{author.display_name}</span></span>}
+            {author && (
+              <span className="flex items-center gap-2">
+                Posted by <span className="font-medium text-foreground">{author.display_name}</span>
+                <ReputationBadge stats={author} compact />
+              </span>
+            )}
           </div>
           <p className="whitespace-pre-wrap leading-relaxed">{report.description}</p>
+
+          {canClaim && (
+            <div className="border-t pt-4 mt-4">
+              <div className="flex items-center gap-2 mb-2 font-semibold">
+                <ShieldCheck className="h-4 w-4" /> Is this yours?
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Submit a claim with proof of ownership. The owner reviews every claim before approving.
+              </p>
+              <ClaimDialog
+                reportId={report.id}
+                ownerId={report.user_id}
+                proofQuestions={report.proof_questions ?? []}
+              />
+            </div>
+          )}
 
           {!isOwner && user && (
             <div className="border-t pt-4 mt-4">
@@ -172,6 +202,15 @@ export default function ReportDetail() {
           )}
         </div>
       </Card>
+
+      {(isOwner || (user && report.type === "found")) && (
+        <section className="mt-8">
+          <h2 className="text-xl font-bold mb-3">
+            {isOwner ? "Claims on this item" : "Your claim status"}
+          </h2>
+          <ClaimsPanel reportId={report.id} isOwner={isOwner} />
+        </section>
+      )}
 
       <section className="mt-10">
         <h2 className="text-xl font-bold mb-4">

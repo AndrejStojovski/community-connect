@@ -33,7 +33,28 @@ export default function Home() {
     if (from) q = q.gte("event_date", from);
     if (to) q = q.lte("event_date", to);
     const { data } = await q;
-    setReports((data ?? []) as ReportCardData[]);
+    const rows = (data ?? []) as ReportCardData[] & Array<{ user_id: string }>;
+    const userIds = Array.from(new Set(rows.map((r) => (r as unknown as { user_id: string }).user_id)));
+    let posterMap: Record<string, ReportCardData["poster"]> = {};
+    if (userIds.length) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id,display_name,reputation_score,verified_claims")
+        .in("id", userIds);
+      (profs ?? []).forEach((p) => {
+        posterMap[p.id] = {
+          display_name: p.display_name,
+          reputation_score: p.reputation_score ?? 0,
+          verified_claims: p.verified_claims ?? 0,
+        };
+      });
+    }
+    setReports(
+      rows.map((r) => ({
+        ...r,
+        poster: posterMap[(r as unknown as { user_id: string }).user_id] ?? null,
+      })) as ReportCardData[]
+    );
     setLoading(false);
   };
 
