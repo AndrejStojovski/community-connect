@@ -16,8 +16,17 @@ import MapView from "./pages/MapView";
 import MessagesPage from "./pages/Messages";
 import Admin from "./pages/Admin";
 import ProfilePage from "./pages/Profile";
+import Banned from "./pages/Banned";
+import { useAuth } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
+
+const BanGate = ({ children }: { children: JSX.Element }) => {
+  const { isBanned, loading } = useAuth();
+  if (loading) return children;
+  if (isBanned) return <Banned />;
+  return children;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -26,7 +35,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
+          <BanGate><Routes>
             <Route path="/auth" element={<AuthPage />} />
             <Route element={<AppLayout />}>
               <Route path="/" element={<Home />} />
@@ -41,7 +50,7 @@ const App = () => (
               <Route path="/profile/:name" element={<ProfilePage />} />
               <Route path="*" element={<NotFound />} />
             </Route>
-          </Routes>
+          </Routes></BanGate>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

@@ -14,6 +14,7 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import foundItLogo from "@/assets/foundit-logo.png";
 
 const navItems = [
@@ -78,6 +79,7 @@ export const AppLayout = () => {
           </nav>
 
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             {user ? (
               <>
                 <NotificationBell />

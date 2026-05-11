@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_audit_logs: {
+        Row: {
+          action: string
+          actor_id: string
+          created_at: string
+          id: string
+          metadata: Json
+          target_id: string | null
+          target_type: string | null
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          created_at?: string
+          id?: string
+          metadata?: Json
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          created_at?: string
+          id?: string
+          metadata?: Json
+          target_id?: string | null
+          target_type?: string | null
+        }
+        Relationships: []
+      }
       claims: {
         Row: {
           answers: Json
@@ -166,6 +196,48 @@ export type Database = {
         }
         Relationships: []
       }
+      report_bookmarks: {
+        Row: {
+          created_at: string
+          id: string
+          report_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          report_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          report_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      report_views: {
+        Row: {
+          created_at: string
+          id: string
+          report_id: string
+          viewer_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          report_id: string
+          viewer_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          report_id?: string
+          viewer_id?: string | null
+        }
+        Relationships: []
+      }
       reports: {
         Row: {
           category: string
@@ -247,6 +319,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_bans: {
+        Row: {
+          ban_type: Database["public"]["Enums"]["ban_type"]
+          banned_by: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          notes: string | null
+          reason: string
+          user_id: string
+        }
+        Insert: {
+          ban_type?: Database["public"]["Enums"]["ban_type"]
+          banned_by: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          reason: string
+          user_id: string
+        }
+        Update: {
+          ban_type?: Database["public"]["Enums"]["ban_type"]
+          banned_by?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          reason?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -280,9 +385,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_banned: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
+      ban_type: "temporary" | "permanent" | "warning"
       claim_status: "pending" | "approved" | "rejected" | "disputed"
       report_status: "active" | "matched" | "resolved" | "archived"
       report_type: "lost" | "found"
@@ -414,6 +521,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      ban_type: ["temporary", "permanent", "warning"],
       claim_status: ["pending", "approved", "rejected", "disputed"],
       report_status: ["active", "matched", "resolved", "archived"],
       report_type: ["lost", "found"],
