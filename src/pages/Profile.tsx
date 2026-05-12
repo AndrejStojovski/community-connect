@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { ReputationBadge } from "@/components/profile/ReputationBadge";
 import { ReportCard, ReportCardData } from "@/components/reports/ReportCard";
+import { getBadges } from "@/lib/reputation";
+import { Badge as UIBadge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { Pencil, Save, X, Upload } from "lucide-react";
@@ -110,8 +112,9 @@ export default function ProfilePage() {
 
   return (
     <div className="container max-w-5xl py-8 space-y-8 animate-fade-in">
-      <Card className="p-6 bg-gradient-card border-white/5">
-        <div className="flex items-start gap-5 flex-wrap">
+      <Card className="overflow-hidden bg-gradient-card border-white/5">
+        <div className="h-28 md:h-36 bg-gradient-hero opacity-80" aria-hidden />
+        <div className="p-6 -mt-12 flex items-start gap-5 flex-wrap">
           <div className="h-20 w-20 rounded-full bg-gradient-hero flex items-center justify-center text-2xl font-bold text-primary-foreground overflow-hidden shrink-0">
             {profile.avatar_url ? (
               <img src={profile.avatar_url} alt={profile.display_name} className="w-full h-full object-cover" />
@@ -119,7 +122,7 @@ export default function ProfilePage() {
               profile.display_name[0]?.toUpperCase()
             )}
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 pt-12">
             {editing ? (
               <div className="space-y-3">
                 <div>
@@ -151,14 +154,23 @@ export default function ProfilePage() {
                   Joined {format(new Date(profile.created_at), "MMMM yyyy")}
                 </div>
                 {profile.bio && <p className="text-sm mt-3 whitespace-pre-wrap leading-relaxed">{profile.bio}</p>}
-                <div className="mt-3">
+                <div className="mt-3 flex flex-wrap items-center gap-2">
                   <ReputationBadge stats={profile} />
+                  {getBadges(profile).map((b) => {
+                    const Icon = b.icon;
+                    return (
+                      <UIBadge key={b.key} variant="outline" className={`gap-1 border ${b.className}`} title={b.description}>
+                        <Icon className="h-3 w-3" /> {b.label}
+                      </UIBadge>
+                    );
+                  })}
                 </div>
               </>
             )}
           </div>
           {isOwn && (
             <div>
+              <div className="pt-12" />
               {editing ? (
                 <div className="flex gap-2">
                   <Button size="sm" onClick={save} disabled={saving}>
