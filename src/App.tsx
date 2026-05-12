@@ -17,6 +17,7 @@ import MessagesPage from "./pages/Messages";
 import Admin from "./pages/Admin";
 import ProfilePage from "./pages/Profile";
 import Banned from "./pages/Banned";
+import Leaderboard from "./pages/Leaderboard";
 import { useAuth } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
             <Route element={<AppLayout />}>
               <Route path="/" element={<Home />} />
               <Route path="/map" element={<MapView />} />
+              <Route path="/leaderboard" element={<Leaderboard />} />
               <Route path="/reports/:id" element={<ReportDetail />} />
               <Route path="/create" element={<ProtectedRoute><CreateReport /></ProtectedRoute>} />
               <Route path="/edit/:id" element={<ProtectedRoute><CreateReport /></ProtectedRoute>} />
