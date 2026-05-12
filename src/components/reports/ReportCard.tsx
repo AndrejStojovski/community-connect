@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Star, ShieldCheck } from "lucide-react";
+import { MapPin, Calendar, Star, ShieldCheck, Bookmark } from "lucide-react";
 import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 export interface ReportCardData {
   id: string;
@@ -19,6 +23,35 @@ export interface ReportCardData {
 
 export const ReportCard = ({ r }: { r: ReportCardData }) => {
   const isLost = r.type === "lost";
+  const { user } = useAuth();
+  const [bookmarked, setBookmarked] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    if (!user) { setBookmarked(false); return; }
+    supabase
+      .from("report_bookmarks")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("report_id", r.id)
+      .maybeSingle()
+      .then(({ data }) => { if (active) setBookmarked(!!data); });
+    return () => { active = false; };
+  }, [user, r.id]);
+
+  const toggleBookmark = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!user) { toast.error("Sign in to bookmark"); return; }
+    if (bookmarked) {
+      await supabase.from("report_bookmarks").delete().eq("user_id", user.id).eq("report_id", r.id);
+      setBookmarked(false);
+    } else {
+      const { error } = await supabase.from("report_bookmarks").insert({ user_id: user.id, report_id: r.id });
+      if (!error) setBookmarked(true);
+    }
+  };
+
   return (
     <Link to={`/reports/${r.id}`} className="block h-full">
       <Card className="overflow-hidden h-full bg-gradient-card border-white/5 shadow-card hover:shadow-elevated hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 group">
@@ -42,8 +75,15 @@ export const ReportCard = ({ r }: { r: ReportCardData }) => {
           >
             {isLost ? "LOST" : "FOUND"}
           </Badge>
+          <button
+            onClick={toggleBookmark}
+            aria-label={bookmarked ? "Remove bookmark" : "Bookmark"}
+            className="absolute top-3 right-3 h-8 w-8 rounded-full backdrop-blur-md bg-card/70 hover:bg-card flex items-center justify-center transition-colors"
+          >
+            <Bookmark className={`h-4 w-4 ${bookmarked ? "fill-primary text-primary" : "text-foreground/80"}`} />
+          </button>
           {r.status !== "active" && (
-            <Badge variant="secondary" className="absolute top-3 right-3 capitalize backdrop-blur-md bg-card/70">
+            <Badge variant="secondary" className="absolute bottom-3 right-3 capitalize backdrop-blur-md bg-card/70">
               {r.status}
             </Badge>
           )}
