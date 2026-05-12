@@ -12,6 +12,7 @@ import {
   Bell,
   Search,
   User as UserIcon,
+  Trophy,
 } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -23,6 +24,7 @@ const navItems = [
   { to: "/my-reports", label: "My Reports", icon: FileText },
   { to: "/map", label: "Map", icon: MapPin },
   { to: "/messages", label: "Messages", icon: MessageSquare },
+  { to: "/leaderboard", label: "Top", icon: Trophy },
 ];
 
 export const AppLayout = () => {
@@ -102,7 +104,7 @@ export const AppLayout = () => {
 
         {/* Mobile bottom nav */}
         <nav className="md:hidden fixed bottom-3 inset-x-3 z-40 rounded-2xl border border-white/10 bg-card/80 backdrop-blur-2xl shadow-elevated">
-          <div className="grid grid-cols-5">
+          <div className="grid grid-cols-6">
             {navItems.map(({ to, label, icon: Icon, end }) => (
               <NavLink
                 key={to}

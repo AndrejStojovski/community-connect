@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ReportCard, ReportCardData } from "@/components/reports/ReportCard";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { MapPin, Calendar, ArrowLeft, Send, MessageSquare, ShieldCheck } from "lucide-react";
+import { MapPin, Calendar, ArrowLeft, Send, MessageSquare, ShieldCheck, Eye } from "lucide-react";
 import { ClaimDialog } from "@/components/claims/ClaimDialog";
 import { ClaimsPanel } from "@/components/claims/ClaimsPanel";
 import { ReputationBadge } from "@/components/profile/ReputationBadge";
@@ -42,6 +42,7 @@ export default function ReportDetail() {
   const [report, setReport] = useState<Report | null>(null);
   const [author, setAuthor] = useState<{ display_name: string; reputation_score: number; successful_returns: number; verified_claims: number; rejected_claims: number } | null>(null);
   const [matches, setMatches] = useState<Array<ReportCardData & { score: number }>>([]);
+  const [viewCount, setViewCount] = useState<number>(0);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
 
@@ -89,6 +90,18 @@ export default function ReportDetail() {
       setMatches(scored as Array<ReportCardData & { score: number }>);
     })();
   }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    (async () => {
+      await supabase.from("report_views").insert({ report_id: id, viewer_id: user?.id ?? null });
+      const { count } = await supabase
+        .from("report_views")
+        .select("*", { count: "exact", head: true })
+        .eq("report_id", id);
+      setViewCount(count ?? 0);
+    })();
+  }, [id, user?.id]);
 
   const sendMessage = async () => {
     if (!user || !report || !message.trim()) return;
@@ -154,6 +167,7 @@ export default function ReportDetail() {
                 <ReputationBadge stats={author} compact />
               </span>
             )}
+            <span className="flex items-center gap-1"><Eye className="h-4 w-4" /> {viewCount} views</span>
           </div>
           <p className="whitespace-pre-wrap leading-relaxed">{report.description}</p>
 

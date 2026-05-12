@@ -17,6 +17,7 @@ type FilterStatus = "all" | "active" | "matched" | "resolved" | "archived";
 export default function Home() {
   const [reports, setReports] = useState<ReportCardData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ total: 0, recovered: 0, active: 0 });
   const [type, setType] = useState<FilterType>("all");
   const [status, setStatus] = useState<FilterStatus>("active");
   const [category, setCategory] = useState<string>("all");
@@ -63,6 +64,17 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, status, category, from, to]);
 
+  useEffect(() => {
+    (async () => {
+      const [{ count: total }, { count: recovered }, { count: active }] = await Promise.all([
+        supabase.from("reports").select("*", { count: "exact", head: true }),
+        supabase.from("reports").select("*", { count: "exact", head: true }).eq("status", "resolved"),
+        supabase.from("reports").select("*", { count: "exact", head: true }).eq("status", "active"),
+      ]);
+      setStats({ total: total ?? 0, recovered: recovered ?? 0, active: active ?? 0 });
+    })();
+  }, []);
+
   const filtered = useMemo(() => {
     if (!keyword.trim()) return reports;
     const k = keyword.toLowerCase();
@@ -100,6 +112,20 @@ export default function Home() {
               <Button asChild size="lg" variant="outline" className="border-white/15 bg-white/5 hover:bg-white/10">
                 <Link to="/map">View map</Link>
               </Button>
+            </div>
+            <div className="grid grid-cols-3 gap-3 mt-8 max-w-md">
+              <div className="glass rounded-xl px-4 py-3">
+                <div className="text-2xl font-bold text-gradient">{stats.total}</div>
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mt-0.5">Reports</div>
+              </div>
+              <div className="glass rounded-xl px-4 py-3">
+                <div className="text-2xl font-bold text-emerald-400">{stats.recovered}</div>
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mt-0.5">Recovered</div>
+              </div>
+              <div className="glass rounded-xl px-4 py-3">
+                <div className="text-2xl font-bold">{stats.active}</div>
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground mt-0.5">Active</div>
+              </div>
             </div>
           </div>
         </div>
