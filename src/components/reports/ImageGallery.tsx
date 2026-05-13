@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight, Maximize2, X, ZoomIn, ZoomOut } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,7 @@ export const ImageGallery = ({ images, alt }: Props) => {
   const [open, setOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
-  const dragging = { active: false, startX: 0, startY: 0, baseX: 0, baseY: 0 };
+  const dragging = useRef({ active: false, startX: 0, startY: 0, baseX: 0, baseY: 0 });
 
   const has = images && images.length > 0;
   if (!has) return null;
@@ -30,15 +30,14 @@ export const ImageGallery = ({ images, alt }: Props) => {
 
   const onMouseDown = (e: React.MouseEvent) => {
     if (zoom <= 1) return;
-    dragging.active = true;
-    dragging.startX = e.clientX; dragging.startY = e.clientY;
-    dragging.baseX = pan.x; dragging.baseY = pan.y;
+    dragging.current = { active: true, startX: e.clientX, startY: e.clientY, baseX: pan.x, baseY: pan.y };
   };
   const onMouseMove = (e: React.MouseEvent) => {
-    if (!dragging.active) return;
-    setPan({ x: dragging.baseX + (e.clientX - dragging.startX), y: dragging.baseY + (e.clientY - dragging.startY) });
+    const d = dragging.current;
+    if (!d.active) return;
+    setPan({ x: d.baseX + (e.clientX - d.startX), y: d.baseY + (e.clientY - d.startY) });
   };
-  const stopDrag = () => { dragging.active = false; };
+  const stopDrag = () => { dragging.current.active = false; };
 
   return (
     <>
