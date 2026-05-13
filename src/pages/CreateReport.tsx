@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { CATEGORIES } from "@/lib/categories";
 import { toast } from "sonner";
-import { Upload, Loader2, Plus, X, ImagePlus } from "lucide-react";
+import { Loader2, Plus, X, ImagePlus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const schema = z.object({
