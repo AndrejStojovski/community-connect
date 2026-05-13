@@ -9,18 +9,18 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Futuristic dark theme (default) */
-    --background: 230 25% 6%;
+    --background: 232 28% 5%;
     --foreground: 220 20% 96%;
 
-    --card: 230 22% 9%;
+    --card: 232 24% 8%;
     --card-foreground: 220 20% 96%;
 
-    --popover: 230 25% 8%;
+    --popover: 232 28% 7%;
     --popover-foreground: 220 20% 96%;
 
-    --primary: 235 85% 65%;
+    --primary: 258 90% 66%;
     --primary-foreground: 230 30% 6%;
-    --primary-glow: 265 85% 70%;
+    --primary-glow: 195 95% 60%;
 
     --secondary: 230 18% 14%;
     --secondary-foreground: 220 20% 96%;
@@ -44,26 +44,27 @@ All colors MUST be HSL.
 
     --border: 230 20% 16%;
     --input: 230 20% 14%;
-    --ring: 235 85% 65%;
+    --ring: 258 90% 66%;
 
     --radius: 0.85rem;
 
-    --gradient-hero: linear-gradient(135deg, hsl(235 85% 60%), hsl(265 85% 65%) 50%, hsl(190 90% 55%));
-    --gradient-soft: linear-gradient(180deg, hsl(230 25% 8%), hsl(230 25% 6%));
-    --gradient-card: linear-gradient(140deg, hsl(230 22% 11% / 0.85), hsl(230 22% 8% / 0.85));
-    --shadow-card: 0 1px 0 0 hsl(220 30% 100% / 0.04) inset, 0 8px 24px -12px hsl(230 50% 2% / 0.6);
-    --shadow-elevated: 0 1px 0 0 hsl(220 30% 100% / 0.06) inset, 0 24px 48px -20px hsl(235 85% 50% / 0.35);
-    --shadow-glow: 0 0 0 1px hsl(235 85% 65% / 0.25), 0 0 40px -8px hsl(235 85% 65% / 0.45);
+    --gradient-hero: linear-gradient(135deg, hsl(258 90% 60%), hsl(295 85% 60%) 45%, hsl(195 95% 58%));
+    --gradient-aurora: linear-gradient(135deg, hsl(258 90% 60% / 0.85), hsl(195 95% 60% / 0.7) 50%, hsl(160 80% 55% / 0.6));
+    --gradient-soft: linear-gradient(180deg, hsl(232 28% 7%), hsl(232 28% 5%));
+    --gradient-card: linear-gradient(140deg, hsl(232 26% 12% / 0.85), hsl(232 26% 8% / 0.85));
+    --shadow-card: 0 1px 0 0 hsl(220 30% 100% / 0.05) inset, 0 8px 28px -12px hsl(232 50% 2% / 0.65);
+    --shadow-elevated: 0 1px 0 0 hsl(220 30% 100% / 0.08) inset, 0 28px 56px -24px hsl(258 90% 50% / 0.4);
+    --shadow-glow: 0 0 0 1px hsl(258 90% 66% / 0.3), 0 0 48px -10px hsl(258 90% 66% / 0.5);
     --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 230 25% 7%;
     --sidebar-foreground: 220 15% 80%;
-    --sidebar-primary: 235 85% 65%;
+    --sidebar-primary: 258 90% 66%;
     --sidebar-primary-foreground: 230 30% 6%;
     --sidebar-accent: 230 18% 13%;
     --sidebar-accent-foreground: 220 20% 96%;
     --sidebar-border: 230 20% 16%;
-    --sidebar-ring: 235 85% 65%;
+    --sidebar-ring: 258 90% 66%;
   }
 
   .light {
@@ -73,9 +74,9 @@ All colors MUST be HSL.
     --card-foreground: 230 25% 10%;
     --popover: 0 0% 100%;
     --popover-foreground: 230 25% 10%;
-    --primary: 235 85% 58%;
+    --primary: 258 90% 58%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 265 85% 65%;
+    --primary-glow: 195 95% 55%;
     --secondary: 220 20% 94%;
     --secondary-foreground: 230 25% 10%;
     --muted: 220 20% 94%;
@@ -84,7 +85,7 @@ All colors MUST be HSL.
     --accent-foreground: 235 85% 30%;
     --border: 220 20% 88%;
     --input: 220 20% 90%;
-    --ring: 235 85% 58%;
+    --ring: 258 90% 58%;
     --gradient-card: linear-gradient(140deg, hsl(0 0% 100% / 0.9), hsl(220 30% 98% / 0.9));
     --shadow-card: 0 2px 12px -4px hsl(230 30% 20% / 0.08);
   }
@@ -99,9 +100,9 @@ All colors MUST be HSL.
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv11", "ss01", "ss03";
     background-image:
-      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(235 85% 50% / 0.18), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 90% 10%, hsl(265 85% 55% / 0.12), transparent 60%),
-      radial-gradient(ellipse 50% 40% at 10% 100%, hsl(190 90% 50% / 0.08), transparent 60%);
+      radial-gradient(ellipse 80% 55% at 50% -10%, hsl(258 90% 55% / 0.22), transparent 60%),
+      radial-gradient(ellipse 60% 45% at 92% 10%, hsl(195 95% 55% / 0.16), transparent 60%),
+      radial-gradient(ellipse 55% 45% at 8% 100%, hsl(295 85% 55% / 0.12), transparent 60%);
     background-attachment: fixed;
   }
 

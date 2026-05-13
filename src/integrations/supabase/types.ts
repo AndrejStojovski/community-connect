@@ -217,6 +217,30 @@ export type Database = {
         }
         Relationships: []
       }
+      report_flags: {
+        Row: {
+          created_at: string
+          flagger_id: string
+          id: string
+          reason: string | null
+          report_id: string
+        }
+        Insert: {
+          created_at?: string
+          flagger_id: string
+          id?: string
+          reason?: string | null
+          report_id: string
+        }
+        Update: {
+          created_at?: string
+          flagger_id?: string
+          id?: string
+          reason?: string | null
+          report_id?: string
+        }
+        Relationships: []
+      }
       report_views: {
         Row: {
           created_at: string
@@ -246,6 +270,7 @@ export type Database = {
           event_date: string
           id: string
           image_url: string | null
+          images: string[]
           latitude: number | null
           location_text: string
           longitude: number | null
@@ -263,6 +288,7 @@ export type Database = {
           event_date: string
           id?: string
           image_url?: string | null
+          images?: string[]
           latitude?: number | null
           location_text: string
           longitude?: number | null
@@ -280,6 +306,7 @@ export type Database = {
           event_date?: string
           id?: string
           image_url?: string | null
+          images?: string[]
           latitude?: number | null
           location_text?: string
           longitude?: number | null
@@ -378,6 +405,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      auto_temp_ban: {
+        Args: { _reason: string; _user_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -386,6 +417,10 @@ export type Database = {
         Returns: boolean
       }
       is_banned: { Args: { _user_id: string }; Returns: boolean }
+      notify_admins: {
+        Args: { _body: string; _link: string; _title: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user"
