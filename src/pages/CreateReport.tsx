@@ -14,7 +14,8 @@ import {
 } from "@/components/ui/select";
 import { CATEGORIES } from "@/lib/categories";
 import { toast } from "sonner";
-import { Upload, Loader2, Plus, X } from "lucide-react";
+import { Upload, Loader2, Plus, X, ImagePlus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const schema = z.object({
   type: z.enum(["lost", "found"]),
@@ -32,6 +33,7 @@ export default function CreateReport() {
   const navigate = useNavigate();
   const { id } = useParams();
   const editing = Boolean(id);
+  const { t } = useTranslation();
 
   const [type, setType] = useState<"lost" | "found">("lost");
   const [title, setTitle] = useState("");
@@ -41,8 +43,9 @@ export default function CreateReport() {
   const [latitude, setLatitude] = useState<string>("");
   const [longitude, setLongitude] = useState<string>("");
   const [eventDate, setEventDate] = useState(new Date().toISOString().slice(0, 10));
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [newPreviews, setNewPreviews] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [proofQuestions, setProofQuestions] = useState<string[]>([]);
 
@@ -59,7 +62,8 @@ export default function CreateReport() {
         setLatitude(data.latitude?.toString() ?? "");
         setLongitude(data.longitude?.toString() ?? "");
         setEventDate(data.event_date);
-        setImagePreview(data.image_url);
+        const imgs: string[] = (data as { images?: string[] }).images ?? [];
+        setExistingImages(imgs.length ? imgs : (data.image_url ? [data.image_url] : []));
         setProofQuestions(((data as { proof_questions?: string[] }).proof_questions) ?? []);
       }
     })();
@@ -80,9 +84,17 @@ export default function CreateReport() {
     );
   };
 
-  const handleFile = (f: File | null) => {
-    setImageFile(f);
-    if (f) setImagePreview(URL.createObjectURL(f));
+  const handleFiles = (files: FileList | null) => {
+    if (!files) return;
+    const slots = 5 - existingImages.length - newFiles.length;
+    const arr = Array.from(files).slice(0, Math.max(0, slots));
+    setNewFiles((prev) => [...prev, ...arr]);
+    setNewPreviews((prev) => [...prev, ...arr.map((f) => URL.createObjectURL(f))]);
+  };
+  const removeExisting = (url: string) => setExistingImages((prev) => prev.filter((u) => u !== url));
+  const removeNew = (i: number) => {
+    setNewFiles((prev) => prev.filter((_, j) => j !== i));
+    setNewPreviews((prev) => prev.filter((_, j) => j !== i));
   };
 
   const submit = async (e: React.FormEvent) => {
@@ -102,17 +114,19 @@ export default function CreateReport() {
     }
     setSubmitting(true);
     try {
-      let image_url: string | null = imagePreview ?? null;
-      if (imageFile) {
-        const ext = imageFile.name.split(".").pop();
+      const uploadedUrls: string[] = [];
+      for (const f of newFiles) {
+        const ext = f.name.split(".").pop();
         const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
         const { error: upErr } = await supabase.storage
           .from("report-images")
-          .upload(path, imageFile, { cacheControl: "3600", upsert: false });
+          .upload(path, f, { cacheControl: "3600", upsert: false });
         if (upErr) throw upErr;
         const { data } = supabase.storage.from("report-images").getPublicUrl(path);
-        image_url = data.publicUrl;
+        uploadedUrls.push(data.publicUrl);
       }
+      const allImages = [...existingImages, ...uploadedUrls].slice(0, 5);
+      const image_url = allImages[0] ?? null;
 
       const dbRow = {
         type: parsed.data.type,
@@ -124,6 +138,7 @@ export default function CreateReport() {
         latitude: parsed.data.latitude ?? undefined,
         longitude: parsed.data.longitude ?? undefined,
         image_url: image_url ?? undefined,
+        images: allImages,
         proof_questions: proofQuestions.map((q) => q.trim()).filter(Boolean).slice(0, 3),
       };
 
@@ -219,23 +234,33 @@ export default function CreateReport() {
           </div>
 
           <div className="space-y-2">
-            <Label>Image</Label>
-            <label className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-lg p-6 cursor-pointer hover:bg-muted/50 transition-smooth">
-              {imagePreview ? (
-                <img src={imagePreview} alt="preview" className="max-h-48 rounded" />
-              ) : (
-                <>
-                  <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                  <span className="text-sm text-muted-foreground">Click to upload an image</span>
-                </>
+            <Label>{t("report.images")}</Label>
+            <p className="text-xs text-muted-foreground">{t("report.imagesHint")}</p>
+            <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+              {existingImages.map((url) => (
+                <div key={url} className="relative aspect-square rounded-lg overflow-hidden border border-border group">
+                  <img src={url} alt="" className="w-full h-full object-cover" />
+                  <button type="button" onClick={() => removeExisting(url)} className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+              {newPreviews.map((url, i) => (
+                <div key={i} className="relative aspect-square rounded-lg overflow-hidden border border-primary/40 group">
+                  <img src={url} alt="" className="w-full h-full object-cover" />
+                  <button type="button" onClick={() => removeNew(i)} className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white opacity-0 group-hover:opacity-100 flex items-center justify-center">
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+              {existingImages.length + newPreviews.length < 5 && (
+                <label className="aspect-square flex flex-col items-center justify-center border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/40 hover:border-primary/40 transition-smooth text-muted-foreground">
+                  <ImagePlus className="h-6 w-6 mb-1" />
+                  <span className="text-[11px]">{t("report.addImage")}</span>
+                  <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
+                </label>
               )}
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
-              />
-            </label>
+            </div>
           </div>
 
           {type === "found" && (
