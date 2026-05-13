@@ -15,21 +15,24 @@ import {
   Trophy,
 } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import foundItLogo from "@/assets/foundit-logo.png";
-
-const navItems = [
-  { to: "/", label: "Home", icon: Home, end: true },
-  { to: "/create", label: "New Report", icon: PlusCircle },
-  { to: "/my-reports", label: "My Reports", icon: FileText },
-  { to: "/map", label: "Map", icon: MapPin },
-  { to: "/messages", label: "Messages", icon: MessageSquare },
-  { to: "/leaderboard", label: "Top", icon: Trophy },
-];
 
 export const AppLayout = () => {
   const { user, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const navItems = [
+    { to: "/", label: t("nav.home"), icon: Home, end: true },
+    { to: "/create", label: t("nav.newReport"), icon: PlusCircle },
+    { to: "/my-reports", label: t("nav.myReports"), icon: FileText },
+    { to: "/map", label: t("nav.map"), icon: MapPin },
+    { to: "/messages", label: t("nav.messages"), icon: MessageSquare },
+    { to: "/leaderboard", label: t("nav.leaderboard"), icon: Trophy },
+  ];
 
   const handleSignOut = async () => {
     await signOut();
@@ -75,28 +78,29 @@ export const AppLayout = () => {
                 }
               >
                 <Shield className="h-4 w-4" />
-                Admin
+                {t("nav.admin")}
               </NavLink>
             )}
           </nav>
 
           <div className="flex items-center gap-2">
+            <LanguageSwitcher />
             <ThemeToggle />
             {user ? (
               <>
                 <NotificationBell />
                 <Button variant="ghost" size="sm" onClick={() => navigate("/profile")}>
                   <UserIcon className="h-4 w-4 md:mr-2" />
-                  <span className="hidden md:inline">Profile</span>
+                  <span className="hidden md:inline">{t("nav.profile")}</span>
                 </Button>
                 <Button variant="ghost" size="sm" onClick={handleSignOut}>
                   <LogOut className="h-4 w-4 md:mr-2" />
-                  <span className="hidden md:inline">Sign out</span>
+                  <span className="hidden md:inline">{t("nav.signOut")}</span>
                 </Button>
               </>
             ) : (
               <Button size="sm" onClick={() => navigate("/auth")} className="bg-gradient-hero text-primary-foreground hover:opacity-90 shadow-glow">
-                Sign in
+                {t("nav.signIn")}
               </Button>
             )}
           </div>
