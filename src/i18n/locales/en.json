@@ -1,0 +1,72 @@
+{
+  "nav": {
+    "home": "Home",
+    "newReport": "New Report",
+    "myReports": "My Reports",
+    "map": "Map",
+    "messages": "Messages",
+    "leaderboard": "Top",
+    "admin": "Admin",
+    "profile": "Profile",
+    "signIn": "Sign in",
+    "signOut": "Sign out"
+  },
+  "common": {
+    "lost": "Lost",
+    "found": "Found",
+    "back": "Back",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "loading": "Loading…",
+    "search": "Search",
+    "language": "Language",
+    "viewAll": "View all"
+  },
+  "report": {
+    "create": "Create a report",
+    "edit": "Edit report",
+    "title": "Title",
+    "description": "Description",
+    "category": "Category",
+    "location": "Location",
+    "useMyLocation": "Use my current location",
+    "dateLost": "Date lost",
+    "dateFound": "Date found",
+    "images": "Images",
+    "imagesHint": "Up to 5 images. First image is the cover.",
+    "addImage": "Add image",
+    "post": "Post report",
+    "saveChanges": "Save changes",
+    "iLost": "I lost something",
+    "iLostHint": "Help others recognize it",
+    "iFound": "I found something",
+    "iFoundHint": "Help reunite it with its owner",
+    "proofQuestions": "Proof questions (optional)",
+    "proofHint": "Ask up to 3 verification questions only the real owner would know.",
+    "potentialMatches": "Potential matches",
+    "noMatches": "No potential matches yet. We'll keep looking as more reports come in.",
+    "contactPoster": "Contact poster",
+    "messagePlaceholder": "Hi, I think I might have your item…",
+    "send": "Send message",
+    "isYours": "Is this yours?",
+    "claimHint": "Submit a claim with proof of ownership. The owner reviews every claim before approving.",
+    "views": "views",
+    "postedBy": "Posted by",
+    "flagSpam": "Report as spam",
+    "flagged": "Flagged",
+    "flagConfirm": "Flag this report as spam? Multiple flags trigger automatic review."
+  },
+  "auth": {
+    "signInRequired": "Sign in to contact the poster.",
+    "signInBookmark": "Sign in to bookmark"
+  },
+  "banned": {
+    "title": "Account suspended",
+    "subtitle": "Your account has been suspended by our moderation team.",
+    "subtitleTemp": "Your account has been temporarily suspended by our moderation team.",
+    "reason": "Reason",
+    "expires": "Suspension expires",
+    "signOut": "Sign out"
+  }
+}

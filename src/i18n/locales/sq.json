@@ -1,0 +1,72 @@
+{
+  "nav": {
+    "home": "Kreu",
+    "newReport": "Raport i ri",
+    "myReports": "Raportet e mia",
+    "map": "Harta",
+    "messages": "Mesazhe",
+    "leaderboard": "Top",
+    "admin": "Admin",
+    "profile": "Profili",
+    "signIn": "Kyçu",
+    "signOut": "Dil"
+  },
+  "common": {
+    "lost": "Humbur",
+    "found": "Gjetur",
+    "back": "Mbrapa",
+    "cancel": "Anulo",
+    "save": "Ruaj",
+    "delete": "Fshi",
+    "loading": "Duke u ngarkuar…",
+    "search": "Kërko",
+    "language": "Gjuha",
+    "viewAll": "Shiko të gjitha"
+  },
+  "report": {
+    "create": "Krijo një raport",
+    "edit": "Redakto raportin",
+    "title": "Titulli",
+    "description": "Përshkrimi",
+    "category": "Kategoria",
+    "location": "Vendndodhja",
+    "useMyLocation": "Përdor vendndodhjen time",
+    "dateLost": "Data e humbjes",
+    "dateFound": "Data e gjetjes",
+    "images": "Fotografi",
+    "imagesHint": "Deri në 5 fotografi. E para është kapaku.",
+    "addImage": "Shto fotografi",
+    "post": "Publiko raportin",
+    "saveChanges": "Ruaj ndryshimet",
+    "iLost": "Kam humbur diçka",
+    "iLostHint": "Ndihmoji të tjerët ta njohin",
+    "iFound": "Kam gjetur diçka",
+    "iFoundHint": "Ndihmo ta kthesh tek pronari",
+    "proofQuestions": "Pyetje verifikimi (opsionale)",
+    "proofHint": "Bëj deri në 3 pyetje që vetëm pronari i vërtetë do t'i dinte.",
+    "potentialMatches": "Përputhje të mundshme",
+    "noMatches": "Ende pa përputhje. Do vazhdojmë të kërkojmë.",
+    "contactPoster": "Kontakto publikuesin",
+    "messagePlaceholder": "Përshëndetje, mendoj se mund të kem sendin tuaj…",
+    "send": "Dërgo mesazh",
+    "isYours": "A është i juaji?",
+    "claimHint": "Dorëzo një kërkesë me prova pronësie. Pronari shqyrton çdo kërkesë para miratimit.",
+    "views": "shikime",
+    "postedBy": "Publikuar nga",
+    "flagSpam": "Raporto si spam",
+    "flagged": "Raportuar",
+    "flagConfirm": "Raporto këtë postim si spam? Disa raporte aktivizojnë rishikim automatik."
+  },
+  "auth": {
+    "signInRequired": "Kyçu për të kontaktuar publikuesin.",
+    "signInBookmark": "Kyçu për të shënuar"
+  },
+  "banned": {
+    "title": "Llogaria e pezulluar",
+    "subtitle": "Llogaria juaj është pezulluar nga ekipi ynë i moderimit.",
+    "subtitleTemp": "Llogaria juaj është pezulluar përkohësisht nga ekipi ynë i moderimit.",
+    "reason": "Arsyeja",
+    "expires": "Pezullimi përfundon",
+    "signOut": "Dil"
+  }
+}
