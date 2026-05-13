@@ -9,10 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { ReportCard, ReportCardData } from "@/components/reports/ReportCard";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { MapPin, Calendar, ArrowLeft, Send, MessageSquare, ShieldCheck, Eye } from "lucide-react";
+import { MapPin, Calendar, ArrowLeft, Send, MessageSquare, ShieldCheck, Eye, Flag } from "lucide-react";
 import { ClaimDialog } from "@/components/claims/ClaimDialog";
 import { ClaimsPanel } from "@/components/claims/ClaimsPanel";
 import { ReputationBadge } from "@/components/profile/ReputationBadge";
+import { ImageGallery } from "@/components/reports/ImageGallery";
+import { useTranslation } from "react-i18next";
 
 interface Report extends ReportCardData {
   user_id: string;
@@ -21,6 +23,7 @@ interface Report extends ReportCardData {
   longitude: number | null;
   created_at: string;
   proof_questions: string[];
+  images: string[];
 }
 
 function tokenize(s: string) {
@@ -39,12 +42,14 @@ export default function ReportDetail() {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [report, setReport] = useState<Report | null>(null);
   const [author, setAuthor] = useState<{ display_name: string; reputation_score: number; successful_returns: number; verified_claims: number; rejected_claims: number } | null>(null);
   const [matches, setMatches] = useState<Array<ReportCardData & { score: number }>>([]);
   const [viewCount, setViewCount] = useState<number>(0);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [flagged, setFlagged] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -103,6 +108,20 @@ export default function ReportDetail() {
     })();
   }, [id, user?.id]);
 
+  useEffect(() => {
+    if (!id || !user) { setFlagged(false); return; }
+    supabase.from("report_flags").select("id").eq("report_id", id).eq("flagger_id", user.id).maybeSingle()
+      .then(({ data }) => setFlagged(!!data));
+  }, [id, user]);
+
+  const flagSpam = async () => {
+    if (!user || !report) return;
+    if (!confirm(t("report.flagConfirm"))) return;
+    const { error } = await supabase.from("report_flags").insert({ report_id: report.id, flagger_id: user.id });
+    if (error) toast.error(error.message);
+    else { setFlagged(true); toast.success(t("report.flagged")); }
+  };
+
   const sendMessage = async () => {
     if (!user || !report || !message.trim()) return;
     if (user.id === report.user_id) {
@@ -136,26 +155,41 @@ export default function ReportDetail() {
   const isOwner = user?.id === report.user_id;
   const isLost = report.type === "lost";
   const canClaim = !isOwner && user && report.type === "found" && report.status === "active";
+  const galleryImages = (report.images && report.images.length > 0)
+    ? report.images
+    : (report.image_url ? [report.image_url] : []);
 
   return (
     <div className="container max-w-4xl py-8">
       <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4">
-        <ArrowLeft className="h-4 w-4 mr-1" /> Back
+        <ArrowLeft className="h-4 w-4 mr-1" /> {t("common.back")}
       </Button>
 
       <Card className="overflow-hidden shadow-card">
-        {report.image_url && (
-          <div className="aspect-video bg-muted">
-            <img src={report.image_url} alt={report.title} className="w-full h-full object-cover" />
+        {galleryImages.length > 0 && (
+          <div className="p-4 pb-0">
+            <ImageGallery images={galleryImages} alt={report.title} />
           </div>
         )}
         <div className="p-6 space-y-4">
           <div className="flex flex-wrap items-center gap-2">
             <Badge className={`border-0 ${isLost ? "bg-[hsl(var(--lost))] text-white" : "bg-[hsl(var(--found))] text-white"}`}>
-              {isLost ? "LOST" : "FOUND"}
+              {isLost ? t("common.lost").toUpperCase() : t("common.found").toUpperCase()}
             </Badge>
             <Badge variant="outline">{report.category}</Badge>
             <Badge variant="secondary" className="capitalize">{report.status}</Badge>
+            {!isOwner && user && (
+              <Button
+                size="sm"
+                variant="ghost"
+                disabled={flagged}
+                onClick={flagSpam}
+                className="ml-auto text-muted-foreground hover:text-destructive"
+              >
+                <Flag className={`h-3.5 w-3.5 mr-1 ${flagged ? "fill-destructive text-destructive" : ""}`} />
+                {flagged ? t("report.flagged") : t("report.flagSpam")}
+              </Button>
+            )}
           </div>
           <h1 className="text-3xl font-bold tracking-tight">{report.title}</h1>
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
@@ -163,11 +197,11 @@ export default function ReportDetail() {
             <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> {format(new Date(report.event_date), "MMMM d, yyyy")}</span>
             {author && (
               <span className="flex items-center gap-2">
-                Posted by <span className="font-medium text-foreground">{author.display_name}</span>
+                {t("report.postedBy")} <span className="font-medium text-foreground">{author.display_name}</span>
                 <ReputationBadge stats={author} compact />
               </span>
             )}
-            <span className="flex items-center gap-1"><Eye className="h-4 w-4" /> {viewCount} views</span>
+            <span className="flex items-center gap-1"><Eye className="h-4 w-4" /> {viewCount} {t("report.views")}</span>
           </div>
           <p className="whitespace-pre-wrap leading-relaxed">{report.description}</p>
 
