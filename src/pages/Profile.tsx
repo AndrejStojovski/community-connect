@@ -14,6 +14,7 @@ import { Badge as UIBadge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { Pencil, Save, X, Upload } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface Profile {
   id: string;
@@ -30,6 +31,7 @@ interface Profile {
 export default function ProfilePage() {
   const { name } = useParams();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [reports, setReports] = useState<ReportCardData[]>([]);
   const [counts, setCounts] = useState({ lost: 0, found: 0 });
@@ -92,11 +94,11 @@ export default function ProfilePage() {
         })
         .eq("id", profile.id);
       if (error) throw error;
-      toast.success("Profile updated");
+      toast.success(t("profile.updated"));
       setEditing(false);
       load();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Could not save");
+      toast.error(err instanceof Error ? err.message : t("profile.saveError"));
     } finally {
       setSaving(false);
     }
@@ -126,18 +128,18 @@ export default function ProfilePage() {
             {editing ? (
               <div className="space-y-3">
                 <div>
-                  <Label className="text-xs">Display name</Label>
+                  <Label className="text-xs">{t("profile.displayName")}</Label>
                   <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} maxLength={50} />
                 </div>
                 <div>
-                  <Label className="text-xs">Bio</Label>
-                  <Textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} maxLength={500} placeholder="Tell the community a bit about you" />
+                  <Label className="text-xs">{t("profile.bio")}</Label>
+                  <Textarea value={bio} onChange={(e) => setBio(e.target.value)} rows={3} maxLength={500} placeholder={t("profile.bioPlaceholder")} />
                 </div>
                 <div>
-                  <Label className="text-xs">Avatar</Label>
+                  <Label className="text-xs">{t("profile.avatar")}</Label>
                   <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
                     <Upload className="h-4 w-4" />
-                    <span>{avatarFile ? avatarFile.name : "Choose image"}</span>
+                    <span>{avatarFile ? avatarFile.name : t("profile.chooseImage")}</span>
                     <input
                       type="file"
                       accept="image/*"
@@ -151,7 +153,7 @@ export default function ProfilePage() {
               <>
                 <h1 className="text-2xl font-bold tracking-tight">{profile.display_name}</h1>
                 <div className="text-xs text-muted-foreground mt-1">
-                  Joined {format(new Date(profile.created_at), "MMMM yyyy")}
+                  {t("common.joined")} {format(new Date(profile.created_at), "MMMM yyyy")}
                 </div>
                 {profile.bio && <p className="text-sm mt-3 whitespace-pre-wrap leading-relaxed">{profile.bio}</p>}
                 <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -174,7 +176,7 @@ export default function ProfilePage() {
               {editing ? (
                 <div className="flex gap-2">
                   <Button size="sm" onClick={save} disabled={saving}>
-                    <Save className="h-4 w-4 mr-1" /> Save
+                    <Save className="h-4 w-4 mr-1" /> {t("common.save")}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => { setEditing(false); setBio(profile.bio ?? ""); setDisplayName(profile.display_name); setAvatarFile(null); }}>
                     <X className="h-4 w-4" />
@@ -182,7 +184,7 @@ export default function ProfilePage() {
                 </div>
               ) : (
                 <Button size="sm" variant="outline" onClick={() => setEditing(true)}>
-                  <Pencil className="h-4 w-4 mr-1" /> Edit
+                  <Pencil className="h-4 w-4 mr-1" /> {t("common.edit")}
                 </Button>
               )}
             </div>
@@ -191,17 +193,17 @@ export default function ProfilePage() {
       </Card>
 
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-        <StatBox label="Reputation" value={profile.reputation_score} highlight />
-        <StatBox label="Lost reports" value={counts.lost} />
-        <StatBox label="Found reports" value={counts.found} />
-        <StatBox label="Successful returns" value={profile.successful_returns} />
-        <StatBox label="Rejected claims" value={profile.rejected_claims} />
+        <StatBox label={t("profile.stats.reputation")} value={profile.reputation_score} highlight />
+        <StatBox label={t("profile.stats.lost")} value={counts.lost} />
+        <StatBox label={t("profile.stats.found")} value={counts.found} />
+        <StatBox label={t("profile.stats.returns")} value={profile.successful_returns} />
+        <StatBox label={t("profile.stats.rejected")} value={profile.rejected_claims} />
       </div>
 
       <section>
-        <h2 className="text-xl font-bold mb-4">Recent reports</h2>
+        <h2 className="text-xl font-bold mb-4">{t("profile.recent")}</h2>
         {reports.length === 0 ? (
-          <Card className="p-8 text-center text-muted-foreground">No reports yet.</Card>
+          <Card className="p-8 text-center text-muted-foreground">{t("profile.noReports")}</Card>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {reports.map((r) => <ReportCard key={r.id} r={r} />)}
@@ -211,7 +213,7 @@ export default function ProfilePage() {
 
       {isOwn && (
         <div className="text-sm text-muted-foreground text-center">
-          <Link to="/my-reports" className="text-primary hover:underline">Manage your reports →</Link>
+          <Link to="/my-reports" className="text-primary hover:underline">{t("profile.manage")}</Link>
         </div>
       )}
     </div>

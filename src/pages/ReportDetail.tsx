@@ -208,11 +208,9 @@ export default function ReportDetail() {
           {canClaim && (
             <div className="border-t pt-4 mt-4">
               <div className="flex items-center gap-2 mb-2 font-semibold">
-                <ShieldCheck className="h-4 w-4" /> Is this yours?
+                <ShieldCheck className="h-4 w-4" /> {t("report.isYours")}
               </div>
-              <p className="text-sm text-muted-foreground mb-3">
-                Submit a claim with proof of ownership. The owner reviews every claim before approving.
-              </p>
+              <p className="text-sm text-muted-foreground mb-3">{t("report.claimHint")}</p>
               <ClaimDialog
                 reportId={report.id}
                 ownerId={report.user_id}
@@ -224,28 +222,28 @@ export default function ReportDetail() {
           {!isOwner && user && (
             <div className="border-t pt-4 mt-4">
               <div className="flex items-center gap-2 mb-2 font-semibold">
-                <MessageSquare className="h-4 w-4" /> Contact poster
+                <MessageSquare className="h-4 w-4" /> {t("report.contactPoster")}
               </div>
               <Textarea
-                placeholder="Hi, I think I might have your item…"
+                placeholder={t("report.messagePlaceholder")}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={3}
                 maxLength={2000}
               />
               <Button onClick={sendMessage} disabled={sending || !message.trim()} className="mt-2">
-                <Send className="h-4 w-4 mr-2" /> Send message
+                <Send className="h-4 w-4 mr-2" /> {t("report.send")}
               </Button>
             </div>
           )}
           {!user && (
             <div className="border-t pt-4 mt-4 text-sm">
-              <Link to="/auth" className="text-primary underline">Sign in</Link> to contact the poster.
+              <Link to="/auth" className="text-primary underline">{t("nav.signIn")}</Link>{" — "}{t("auth.signInRequired")}
             </div>
           )}
           {isOwner && (
             <div className="border-t pt-4 mt-4 text-sm text-muted-foreground">
-              This is your report. <Link to={`/edit/${report.id}`} className="text-primary underline">Edit it</Link> from My Reports.
+              {t("report.yourReportNote")} <Link to={`/edit/${report.id}`} className="text-primary underline">{t("report.editIt")}</Link> {t("report.fromMyReports")}
             </div>
           )}
         </div>
@@ -254,7 +252,7 @@ export default function ReportDetail() {
       {(isOwner || (user && report.type === "found")) && (
         <section className="mt-8">
           <h2 className="text-xl font-bold mb-3">
-            {isOwner ? "Claims on this item" : "Your claim status"}
+            {isOwner ? t("report.claimsOnItem") : t("report.yourClaimStatus")}
           </h2>
           <ClaimsPanel reportId={report.id} isOwner={isOwner} />
         </section>
@@ -262,14 +260,14 @@ export default function ReportDetail() {
 
       <section className="mt-10">
         <h2 className="text-xl font-bold mb-4">
-          Potential matches{" "}
+          {t("report.potentialMatches")}{" "}
           <span className="text-sm font-normal text-muted-foreground">
-            ({isLost ? "found items" : "lost items"} that might be related)
+            {isLost ? t("report.potentialMatchesHintLost") : t("report.potentialMatchesHintFound")}
           </span>
         </h2>
         {matches.length === 0 ? (
           <Card className="p-8 text-center text-muted-foreground">
-            No potential matches yet. We'll keep looking as more reports come in.
+            {t("report.noMatches")}
           </Card>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

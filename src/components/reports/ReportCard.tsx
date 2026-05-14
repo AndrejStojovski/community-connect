@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export interface ReportCardData {
   id: string;
@@ -25,6 +26,7 @@ export const ReportCard = ({ r }: { r: ReportCardData }) => {
   const isLost = r.type === "lost";
   const { user } = useAuth();
   const [bookmarked, setBookmarked] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     let active = true;
@@ -42,7 +44,7 @@ export const ReportCard = ({ r }: { r: ReportCardData }) => {
   const toggleBookmark = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!user) { toast.error("Sign in to bookmark"); return; }
+    if (!user) { toast.error(t("auth.signInBookmark")); return; }
     if (bookmarked) {
       await supabase.from("report_bookmarks").delete().eq("user_id", user.id).eq("report_id", r.id);
       setBookmarked(false);
@@ -65,7 +67,7 @@ export const ReportCard = ({ r }: { r: ReportCardData }) => {
             />
           ) : (
             <div className="w-full h-full bg-gradient-card flex items-center justify-center text-muted-foreground text-sm">
-              No image
+              {t("common.noImage")}
             </div>
           )}
           <Badge
@@ -73,7 +75,7 @@ export const ReportCard = ({ r }: { r: ReportCardData }) => {
               isLost ? "bg-[hsl(var(--lost))]/90 text-white" : "bg-[hsl(var(--found))]/90 text-white"
             }`}
           >
-            {isLost ? "LOST" : "FOUND"}
+            {(isLost ? t("common.lost") : t("common.found")).toUpperCase()}
           </Badge>
           <button
             onClick={toggleBookmark}

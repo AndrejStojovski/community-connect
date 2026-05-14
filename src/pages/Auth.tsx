@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const signInSchema = z.object({
   email: z.string().trim().email("Invalid email").max(255),
@@ -22,6 +23,7 @@ const signUpSchema = signInSchema.extend({
 export default function AuthPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [signIn, setSignIn] = useState({ email: "", password: "" });
   const [signUp, setSignUp] = useState({ email: "", password: "", displayName: "" });
@@ -66,7 +68,7 @@ export default function AuthPage() {
     setLoading(false);
     if (error) toast.error(error.message);
     else {
-      toast.success("Account created! You're signed in.");
+      toast.success(t("auth.created"));
       navigate("/");
     }
   };
@@ -79,30 +81,30 @@ export default function AuthPage() {
             <Search className="h-7 w-7 text-primary-foreground" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">FoundIt</h1>
-          <p className="text-muted-foreground mt-1">Community Lost &amp; Found</p>
+          <p className="text-muted-foreground mt-1">{t("auth.subtitle")}</p>
         </div>
 
         <Card className="p-6 shadow-elevated">
           <Tabs defaultValue="signin">
             <TabsList className="grid grid-cols-2 mb-6">
-              <TabsTrigger value="signin">Sign in</TabsTrigger>
-              <TabsTrigger value="signup">Create account</TabsTrigger>
+              <TabsTrigger value="signin">{t("auth.signIn")}</TabsTrigger>
+              <TabsTrigger value="signup">{t("auth.createAccount")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="si-email">Email</Label>
+                  <Label htmlFor="si-email">{t("auth.email")}</Label>
                   <Input id="si-email" type="email" value={signIn.email}
                     onChange={(e) => setSignIn({ ...signIn, email: e.target.value })} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="si-pw">Password</Label>
+                  <Label htmlFor="si-pw">{t("auth.password")}</Label>
                   <Input id="si-pw" type="password" value={signIn.password}
                     onChange={(e) => setSignIn({ ...signIn, password: e.target.value })} />
                 </div>
                 <Button className="w-full" type="submit" disabled={loading}>
-                  {loading ? "Signing in…" : "Sign in"}
+                  {loading ? t("auth.signingIn") : t("auth.signIn")}
                 </Button>
               </form>
             </TabsContent>
@@ -110,22 +112,22 @@ export default function AuthPage() {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="su-name">Display name</Label>
+                  <Label htmlFor="su-name">{t("auth.displayName")}</Label>
                   <Input id="su-name" value={signUp.displayName}
                     onChange={(e) => setSignUp({ ...signUp, displayName: e.target.value })} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="su-email">Email</Label>
+                  <Label htmlFor="su-email">{t("auth.email")}</Label>
                   <Input id="su-email" type="email" value={signUp.email}
                     onChange={(e) => setSignUp({ ...signUp, email: e.target.value })} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="su-pw">Password</Label>
+                  <Label htmlFor="su-pw">{t("auth.password")}</Label>
                   <Input id="su-pw" type="password" value={signUp.password}
                     onChange={(e) => setSignUp({ ...signUp, password: e.target.value })} />
                 </div>
                 <Button className="w-full" type="submit" disabled={loading}>
-                  {loading ? "Creating…" : "Create account"}
+                  {loading ? t("auth.creating") : t("auth.createAccount")}
                 </Button>
               </form>
             </TabsContent>
