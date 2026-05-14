@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface Message {
   id: string;
@@ -31,6 +32,7 @@ interface Thread {
 
 export default function MessagesPage() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [params, setParams] = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [reportsMap, setReportsMap] = useState<Record<string, { title: string; user_id: string }>>({});
@@ -153,13 +155,13 @@ export default function MessagesPage() {
   };
 
   return (
-    <div className="container py-8">
-      <h1 className="text-3xl font-bold tracking-tight mb-6">Messages</h1>
-      <Card className="grid md:grid-cols-[280px_1fr] overflow-hidden h-[70vh]">
+    <div className="container py-6 md:py-8">
+      <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-4 md:mb-6">{t("messages.title")}</h1>
+      <Card className="grid grid-cols-1 md:grid-cols-[280px_1fr] overflow-hidden h-[75vh] md:h-[70vh]">
         <div className="border-r border-border">
           <ScrollArea className="h-full">
             {threads.length === 0 ? (
-              <div className="p-6 text-sm text-muted-foreground text-center">No conversations yet</div>
+              <div className="p-6 text-sm text-muted-foreground text-center">{t("messages.empty")}</div>
             ) : (
               threads.map((t) => {
                 const k = `${t.reportId}:${t.otherUserId}`;
@@ -189,7 +191,7 @@ export default function MessagesPage() {
         <div className="flex flex-col">
           {!active ? (
             <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-              Select a conversation
+              {t("messages.select")}
             </div>
           ) : (
             <>
@@ -220,7 +222,7 @@ export default function MessagesPage() {
                 <Input
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
-                  placeholder="Type a message…"
+                  placeholder={t("messages.placeholder")}
                   onKeyDown={(e) => { if (e.key === "Enter") send(); }}
                   maxLength={2000}
                 />

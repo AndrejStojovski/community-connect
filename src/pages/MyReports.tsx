@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner";
 import { Pencil, Trash2, PlusCircle } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface Row {
   id: string;
@@ -32,6 +33,7 @@ const STATUSES = ["active", "matched", "resolved", "archived"] as const;
 
 export default function MyReports() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -52,24 +54,24 @@ export default function MyReports() {
   const updateStatus = async (id: string, status: Row["status"]) => {
     const { error } = await supabase.from("reports").update({ status }).eq("id", id);
     if (error) toast.error(error.message);
-    else { toast.success("Status updated"); load(); }
+    else { toast.success(t("myReports.statusUpdated")); load(); }
   };
 
   const remove = async (id: string) => {
     const { error } = await supabase.from("reports").delete().eq("id", id);
     if (error) toast.error(error.message);
-    else { toast.success("Report deleted"); load(); }
+    else { toast.success(t("myReports.deleted")); load(); }
   };
 
   return (
     <div className="container py-8">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">My Reports</h1>
-          <p className="text-muted-foreground mt-1">Manage your lost and found posts</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t("myReports.title")}</h1>
+          <p className="text-muted-foreground mt-1">{t("myReports.subtitle")}</p>
         </div>
         <Button asChild>
-          <Link to="/create"><PlusCircle className="h-4 w-4 mr-2" /> New report</Link>
+          <Link to="/create"><PlusCircle className="h-4 w-4 mr-2" /> {t("myReports.newReport")}</Link>
         </Button>
       </div>
 
@@ -81,8 +83,8 @@ export default function MyReports() {
         </div>
       ) : rows.length === 0 ? (
         <Card className="p-12 text-center">
-          <p className="text-muted-foreground mb-4">You haven't posted any reports yet.</p>
-          <Button asChild><Link to="/create">Create your first report</Link></Button>
+          <p className="text-muted-foreground mb-4">{t("myReports.empty")}</p>
+          <Button asChild><Link to="/create">{t("myReports.createFirst")}</Link></Button>
         </Card>
       ) : (
         <div className="space-y-3">
@@ -101,7 +103,7 @@ export default function MyReports() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start gap-2 flex-wrap">
                     <Badge className={`border-0 ${r.type === "lost" ? "bg-[hsl(var(--lost))] text-white" : "bg-[hsl(var(--found))] text-white"}`}>
-                      {r.type.toUpperCase()}
+                      {(r.type === "lost" ? t("common.lost") : t("common.found")).toUpperCase()}
                     </Badge>
                     <Link to={`/reports/${r.id}`} className="font-semibold hover:underline truncate">
                       {r.title}
@@ -114,26 +116,26 @@ export default function MyReports() {
                     <Select value={r.status} onValueChange={(v) => updateStatus(r.id, v as Row["status"])}>
                       <SelectTrigger className="h-8 w-36 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        {STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}
+                        {STATUSES.map((s) => <SelectItem key={s} value={s} className="capitalize">{t(`common.${s}`)}</SelectItem>)}
                       </SelectContent>
                     </Select>
                     <Button asChild size="sm" variant="outline">
-                      <Link to={`/edit/${r.id}`}><Pencil className="h-3.5 w-3.5 mr-1" /> Edit</Link>
+                      <Link to={`/edit/${r.id}`}><Pencil className="h-3.5 w-3.5 mr-1" /> {t("common.edit")}</Link>
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button size="sm" variant="outline" className="text-destructive hover:text-destructive">
-                          <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete
+                          <Trash2 className="h-3.5 w-3.5 mr-1" /> {t("common.delete")}
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Delete this report?</AlertDialogTitle>
-                          <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+                          <AlertDialogTitle>{t("myReports.deleteTitle")}</AlertDialogTitle>
+                          <AlertDialogDescription>{t("myReports.deleteDesc")}</AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => remove(r.id)}>Delete</AlertDialogAction>
+                          <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => remove(r.id)}>{t("common.delete")}</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>

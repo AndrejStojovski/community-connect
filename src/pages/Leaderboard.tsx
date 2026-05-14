@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { ReputationBadge } from "@/components/profile/ReputationBadge";
 import { Trophy, Medal, Award } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface Row {
   id: string;
@@ -16,6 +17,7 @@ interface Row {
 }
 
 export default function Leaderboard() {
+  const { t } = useTranslation();
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,8 +43,8 @@ export default function Leaderboard() {
   return (
     <div className="container max-w-3xl py-8 animate-fade-in">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">Community Leaderboard</h1>
-        <p className="text-muted-foreground mt-2">Top contributors by reputation score.</p>
+        <h1 className="text-3xl font-bold tracking-tight">{t("leaderboard.title")}</h1>
+        <p className="text-muted-foreground mt-2">{t("leaderboard.subtitle")}</p>
       </div>
       {loading ? (
         <div className="space-y-2">
@@ -67,7 +69,7 @@ export default function Leaderboard() {
               <div className="flex-1 min-w-0">
                 <div className="font-semibold truncate">{r.display_name}</div>
                 <div className="text-xs text-muted-foreground">
-                  {r.successful_returns} returns · {r.verified_claims} verified
+                  {r.successful_returns} {t("leaderboard.returns")} · {r.verified_claims} {t("leaderboard.verified")}
                 </div>
               </div>
               <div className="text-right">
@@ -77,7 +79,7 @@ export default function Leaderboard() {
             </Link>
           ))}
           {rows.length === 0 && (
-            <div className="p-8 text-center text-muted-foreground">No contributors yet.</div>
+            <div className="p-8 text-center text-muted-foreground">{t("leaderboard.empty")}</div>
           )}
         </Card>
       )}

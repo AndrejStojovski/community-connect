@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 const lostIcon = L.divIcon({
   className: "",
@@ -32,6 +33,7 @@ interface Pin {
 }
 
 export default function MapView() {
+  const { t } = useTranslation();
   const [pins, setPins] = useState<Pin[]>([]);
   const [filter, setFilter] = useState<"all" | "lost" | "found">("all");
 
@@ -57,20 +59,20 @@ export default function MapView() {
     <div className="container py-8">
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Map view</h1>
-          <p className="text-muted-foreground">Browse reports by location</p>
+          <h1 className="text-3xl font-bold tracking-tight">{t("map.title")}</h1>
+          <p className="text-muted-foreground">{t("map.subtitle")}</p>
         </div>
         <Tabs value={filter} onValueChange={(v) => setFilter(v as typeof filter)}>
           <TabsList>
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="lost">Lost</TabsTrigger>
-            <TabsTrigger value="found">Found</TabsTrigger>
+            <TabsTrigger value="all">{t("common.all")}</TabsTrigger>
+            <TabsTrigger value="lost">{t("common.lost")}</TabsTrigger>
+            <TabsTrigger value="found">{t("common.found")}</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
 
       <Card className="overflow-hidden shadow-card">
-        <div className="h-[70vh]">
+        <div className="h-[60vh] md:h-[70vh]">
           <MapContainer center={center} zoom={visible.length ? 12 : 3} style={{ height: "100%", width: "100%" }}>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -81,11 +83,11 @@ export default function MapView() {
                 <Popup>
                   <div className="space-y-1">
                     <Badge className={`border-0 ${p.type === "lost" ? "bg-[hsl(var(--lost))]" : "bg-[hsl(var(--found))]"} text-white`}>
-                      {p.type.toUpperCase()}
+                      {(p.type === "lost" ? t("common.lost") : t("common.found")).toUpperCase()}
                     </Badge>
                     <div className="font-semibold">{p.title}</div>
                     <div className="text-xs text-muted-foreground">{p.category} · {p.location_text}</div>
-                    <Link to={`/reports/${p.id}`} className="text-xs text-primary underline">View report →</Link>
+                    <Link to={`/reports/${p.id}`} className="text-xs text-primary underline">{t("map.viewReport")}</Link>
                   </div>
                 </Popup>
               </Marker>
@@ -95,7 +97,7 @@ export default function MapView() {
       </Card>
       {visible.length === 0 && (
         <p className="text-center text-muted-foreground mt-4 text-sm">
-          No reports with location data yet. Add coordinates when creating a report to see them here.
+          {t("map.empty")}
         </p>
       )}
     </div>

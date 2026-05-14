@@ -42,9 +42,9 @@ export const AppLayout = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-40 border-b border-white/5 bg-background/60 backdrop-blur-xl">
-        <div className="container flex h-18 py-2 items-center justify-between gap-4">
-          <Link to="/" className="flex items-center gap-2">
-            <img src={foundItLogo} alt="FoundIt logo" className="h-12 md:h-14 w-auto" />
+        <div className="container flex h-20 md:h-24 py-2 items-center justify-between gap-2 md:gap-4">
+          <Link to="/" className="flex items-center gap-2 shrink-0">
+            <img src={foundItLogo} alt="FoundIt logo" className="h-14 md:h-20 w-auto drop-shadow-[0_0_24px_hsl(var(--primary)/0.35)]" />
             <span className="sr-only">FoundIt</span>
           </Link>
 
