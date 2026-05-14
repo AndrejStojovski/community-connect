@@ -71,16 +71,16 @@ export default function CreateReport() {
 
   const useMyLocation = () => {
     if (!navigator.geolocation) {
-      toast.error("Geolocation not supported");
+      toast.error(t("report.geoUnsupported"));
       return;
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setLatitude(pos.coords.latitude.toFixed(6));
         setLongitude(pos.coords.longitude.toFixed(6));
-        toast.success("Location captured");
+        toast.success(t("report.locationCaptured"));
       },
-      () => toast.error("Could not get location")
+      () => toast.error(t("report.locationError"))
     );
   };
 
@@ -145,7 +145,7 @@ export default function CreateReport() {
       if (editing) {
         const { error } = await supabase.from("reports").update(dbRow).eq("id", id!);
         if (error) throw error;
-        toast.success("Report updated");
+        toast.success(t("report.updated"));
       } else {
         const { data, error } = await supabase
           .from("reports")
@@ -153,7 +153,7 @@ export default function CreateReport() {
           .select("id")
           .single();
         if (error) throw error;
-        toast.success("Report posted");
+        toast.success(t("report.posted"));
         navigate(`/reports/${data.id}`);
         return;
       }
@@ -167,63 +167,61 @@ export default function CreateReport() {
   };
 
   return (
-    <div className="container max-w-2xl py-8">
-      <h1 className="text-3xl font-bold tracking-tight mb-2">
-        {editing ? "Edit report" : "Create a report"}
+    <div className="container max-w-2xl py-6 md:py-8">
+      <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">
+        {editing ? t("report.edit") : t("report.create")}
       </h1>
-      <p className="text-muted-foreground mb-6">
-        Provide as much detail as possible — it helps the community find a match.
-      </p>
-      <Card className="p-6 shadow-card">
+      <p className="text-muted-foreground mb-6">{t("report.createSubtitle")}</p>
+      <Card className="p-4 md:p-6 shadow-card">
         <form onSubmit={submit} className="space-y-5">
           <div>
-            <Label className="mb-2 block">Type</Label>
+            <Label className="mb-2 block">{t("report.type")}</Label>
             <RadioGroup value={type} onValueChange={(v) => setType(v as "lost" | "found")} className="grid grid-cols-2 gap-3">
               <label className={`cursor-pointer rounded-lg border-2 p-4 transition-smooth ${type === "lost" ? "border-[hsl(var(--lost))] bg-[hsl(var(--lost))]/5" : "border-border"}`}>
                 <RadioGroupItem value="lost" className="sr-only" />
-                <div className="font-semibold">I lost something</div>
-                <div className="text-xs text-muted-foreground">Help others recognize it</div>
+                <div className="font-semibold">{t("report.iLost")}</div>
+                <div className="text-xs text-muted-foreground">{t("report.iLostHint")}</div>
               </label>
               <label className={`cursor-pointer rounded-lg border-2 p-4 transition-smooth ${type === "found" ? "border-[hsl(var(--found))] bg-[hsl(var(--found))]/5" : "border-border"}`}>
                 <RadioGroupItem value="found" className="sr-only" />
-                <div className="font-semibold">I found something</div>
-                <div className="text-xs text-muted-foreground">Help reunite it with its owner</div>
+                <div className="font-semibold">{t("report.iFound")}</div>
+                <div className="text-xs text-muted-foreground">{t("report.iFoundHint")}</div>
               </label>
             </RadioGroup>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={100} placeholder="e.g. Black leather wallet" />
+            <Label htmlFor="title">{t("report.title")}</Label>
+            <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={100} placeholder={t("report.titlePlaceholder")} />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="desc">Description</Label>
-            <Textarea id="desc" value={description} onChange={(e) => setDescription(e.target.value)} rows={4} maxLength={2000} placeholder="Distinguishing marks, contents, color, brand…" />
+            <Label htmlFor="desc">{t("report.description")}</Label>
+            <Textarea id="desc" value={description} onChange={(e) => setDescription(e.target.value)} rows={4} maxLength={2000} placeholder={t("report.descPlaceholder")} />
           </div>
 
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Category</Label>
+              <Label>{t("report.category")}</Label>
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t("report.selectCategory")} /></SelectTrigger>
                 <SelectContent>
                   {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="date">Date {type === "lost" ? "lost" : "found"}</Label>
+              <Label htmlFor="date">{type === "lost" ? t("report.dateLost") : t("report.dateFound")}</Label>
               <Input id="date" type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="loc">Location</Label>
-            <Input id="loc" value={locationText} onChange={(e) => setLocationText(e.target.value)} placeholder="e.g. Central Park, near the fountain" />
+            <Label htmlFor="loc">{t("report.location")}</Label>
+            <Input id="loc" value={locationText} onChange={(e) => setLocationText(e.target.value)} placeholder={t("report.locationPlaceholder")} />
             <div className="flex flex-wrap items-center gap-2">
               <Button type="button" variant="outline" size="sm" onClick={useMyLocation}>
-                Use my current location
+                {t("report.useMyLocation")}
               </Button>
               {(latitude && longitude) && (
                 <span className="text-xs text-muted-foreground">
@@ -267,10 +265,8 @@ export default function CreateReport() {
             <div className="space-y-2 rounded-lg border border-border/60 bg-card/40 p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="text-base">Proof questions (optional)</Label>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Ask up to 3 verification questions only the real owner would know.
-                  </p>
+                  <Label className="text-base">{t("report.proofQuestions")}</Label>
+                  <p className="text-xs text-muted-foreground mt-1">{t("report.proofHint")}</p>
                 </div>
                 {proofQuestions.length < 3 && (
                   <Button
@@ -279,7 +275,7 @@ export default function CreateReport() {
                     size="sm"
                     onClick={() => setProofQuestions([...proofQuestions, ""])}
                   >
-                    <Plus className="h-4 w-4 mr-1" /> Add
+                    <Plus className="h-4 w-4 mr-1" /> {t("report.addQuestion")}
                   </Button>
                 )}
               </div>
@@ -288,7 +284,7 @@ export default function CreateReport() {
                   <Input
                     value={q}
                     maxLength={200}
-                    placeholder={`Question ${i + 1} (e.g. "What's engraved inside?")`}
+                    placeholder={t("report.questionPlaceholder", { n: i + 1 })}
                     onChange={(e) => {
                       const next = [...proofQuestions];
                       next[i] = e.target.value;
@@ -310,7 +306,7 @@ export default function CreateReport() {
 
           <Button type="submit" className="w-full" size="lg" disabled={submitting}>
             {submitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            {editing ? "Save changes" : "Post report"}
+            {editing ? t("report.saveChanges") : t("report.post")}
           </Button>
         </form>
       </Card>
