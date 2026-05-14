@@ -238,7 +238,7 @@ export default function ReportDetail() {
           )}
           {!user && (
             <div className="border-t pt-4 mt-4 text-sm">
-              <Link to="/auth" className="text-primary underline">{t("nav.signIn")}</Link> {t("auth.signInRequired").toLowerCase().replace(/^.{0,9}/, '')}
+              <Link to="/auth" className="text-primary underline">{t("nav.signIn")}</Link>{" — "}{t("auth.signInRequired")}
             </div>
           )}
           {isOwner && (
