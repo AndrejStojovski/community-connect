@@ -97,10 +97,9 @@ export default function Home() {
           src={heroBg}
           alt=""
           aria-hidden
-          className="absolute inset-0 w-full h-full object-cover opacity-50 [mask-image:linear-gradient(to_bottom,black_55%,transparent)]"
+          className="absolute inset-0 w-full h-full object-cover opacity-90 [mask-image:linear-gradient(to_bottom,black_65%,transparent)]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-background/40 to-background" aria-hidden />
-        <div className="absolute inset-0 bg-gradient-hero opacity-15 blur-3xl mix-blend-screen" aria-hidden />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-background/20 to-background" aria-hidden />
         <div className="container py-12 md:py-24 relative">
           <div className="max-w-2xl animate-fade-in">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-xs font-medium mb-5 text-foreground/80">
