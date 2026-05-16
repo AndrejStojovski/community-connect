@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { ReportCard, ReportCardData } from "@/components/reports/ReportCard";
 import { CATEGORIES } from "@/lib/categories";
-import { Search, PlusCircle, Sparkles } from "lucide-react";
+import { Search, PlusCircle, Sparkles, ArrowRight, ShieldCheck, Users, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import heroBg from "@/assets/hero-bg.jpg";
 
@@ -97,43 +97,64 @@ export default function Home() {
           src={heroBg}
           alt=""
           aria-hidden
-          className="absolute inset-0 w-full h-full object-cover opacity-90 [mask-image:linear-gradient(to_bottom,black_65%,transparent)]"
+          className="absolute inset-0 w-full h-full object-cover opacity-90 [mask-image:linear-gradient(to_bottom,black_60%,transparent)]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-background/20 to-background" aria-hidden />
-        <div className="container py-12 md:py-24 relative">
-          <div className="max-w-2xl animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-xs font-medium mb-5 text-foreground/80">
+        {/* Animated gradient orbs */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-32 -left-24 h-[28rem] w-[28rem] rounded-full bg-primary/30 blur-3xl animate-pulse-glow" />
+          <div className="absolute top-10 -right-32 h-[26rem] w-[26rem] rounded-full bg-primary-glow/25 blur-3xl animate-pulse-glow" style={{ animationDelay: "1.2s" }} />
+          <div className="absolute bottom-0 left-1/3 h-[22rem] w-[22rem] rounded-full bg-fuchsia-500/15 blur-3xl" />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/30 to-background" aria-hidden />
+        <div className="container py-16 md:py-28 relative">
+          <div className="max-w-3xl animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-strong text-xs font-medium mb-6 text-foreground/85 shadow-glow">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+              </span>
               <Sparkles className="h-3.5 w-3.5 text-primary" /> {t("home.tagline")}
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">
-              {t("home.heroLine1")}{" "}
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight leading-[1.02]">
+              {t("home.heroLine1")}
+              <br />
               <span className="text-gradient">{t("home.heroLine2")}</span>
             </h1>
-            <p className="text-muted-foreground mt-4 md:mt-5 text-base md:text-lg leading-relaxed">
+            <p className="text-muted-foreground mt-5 md:mt-6 text-base md:text-xl leading-relaxed max-w-2xl">
               {t("home.heroSubtitle")}
             </p>
-            <div className="flex flex-wrap gap-3 mt-6 md:mt-7">
-              <Button asChild size="lg" className="bg-gradient-hero text-primary-foreground hover:opacity-90 shadow-glow">
+            <div className="flex flex-wrap gap-3 mt-7 md:mt-9">
+              <Button asChild size="lg" className="group bg-gradient-hero text-primary-foreground hover:opacity-90 shadow-glow h-12 px-6 text-base">
                 <Link to="/create">
                   <PlusCircle className="h-5 w-5 mr-2" /> {t("home.createCta")}
+                  <ArrowRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-white/15 bg-white/5 hover:bg-white/10">
+              <Button asChild size="lg" variant="outline" className="h-12 px-6 text-base border-white/15 bg-white/5 hover:bg-white/10 backdrop-blur">
                 <Link to="/map">{t("home.viewMap")}</Link>
               </Button>
             </div>
-            <div className="grid grid-cols-3 gap-2 md:gap-3 mt-6 md:mt-8 max-w-md">
-              <div className="glass rounded-xl px-4 py-3">
-                <div className="text-2xl font-bold text-gradient">{stats.total}</div>
-                <div className="text-[10px] md:text-[11px] uppercase tracking-wider text-muted-foreground mt-0.5">{t("home.stats.reports")}</div>
+
+            {/* Trust signals */}
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 mt-6 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-emerald-400" /> Verified claims</div>
+              <div className="flex items-center gap-1.5"><Users className="h-3.5 w-3.5 text-primary" /> Community moderated</div>
+              <div className="flex items-center gap-1.5"><CheckCircle2 className="h-3.5 w-3.5 text-primary-glow" /> Free to use</div>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-2 md:gap-4 mt-8 md:mt-10 max-w-xl">
+              <div className="glass-strong rounded-2xl px-4 py-4 hover-lift">
+                <div className="text-3xl md:text-4xl font-bold text-gradient tabular-nums">{stats.total}</div>
+                <div className="text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground mt-1">{t("home.stats.reports")}</div>
               </div>
-              <div className="glass rounded-xl px-4 py-3">
-                <div className="text-2xl font-bold text-emerald-400">{stats.recovered}</div>
-                <div className="text-[10px] md:text-[11px] uppercase tracking-wider text-muted-foreground mt-0.5">{t("home.stats.recovered")}</div>
+              <div className="glass-strong rounded-2xl px-4 py-4 hover-lift">
+                <div className="text-3xl md:text-4xl font-bold text-emerald-400 tabular-nums">{stats.recovered}</div>
+                <div className="text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground mt-1">{t("home.stats.recovered")}</div>
               </div>
-              <div className="glass rounded-xl px-4 py-3">
-                <div className="text-2xl font-bold">{stats.active}</div>
-                <div className="text-[10px] md:text-[11px] uppercase tracking-wider text-muted-foreground mt-0.5">{t("home.stats.active")}</div>
+              <div className="glass-strong rounded-2xl px-4 py-4 hover-lift">
+                <div className="text-3xl md:text-4xl font-bold tabular-nums">{stats.active}</div>
+                <div className="text-[10px] md:text-xs uppercase tracking-wider text-muted-foreground mt-1">{t("home.stats.active")}</div>
               </div>
             </div>
           </div>
