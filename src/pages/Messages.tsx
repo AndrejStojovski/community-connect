@@ -71,8 +71,9 @@ export default function MessagesPage() {
 
   useEffect(() => {
     if (!user) return;
+    const topic = `msgs-${user.id}-${Math.random().toString(36).slice(2)}`;
     const channel = supabase
-      .channel(`msgs-${user.id}`)
+      .channel(topic)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, (payload) => {
         const m = payload.new as Message;
         if (m.sender_id === user.id || m.recipient_id === user.id) load();
